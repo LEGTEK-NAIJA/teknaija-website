@@ -1,4 +1,5 @@
 import type { CSSProperties } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import type { Metadata } from "next";
 import { AdireGround } from "@/components/motifs/AdireGround";
@@ -9,6 +10,7 @@ import {
   type CaseSector,
   type CaseVariant,
 } from "@/components/marketing/CaseRow";
+import { HeritageImage } from "@/components/marketing/HeritageImage";
 import {
   TestimonialCarousel,
   type Testimonial,
@@ -192,10 +194,13 @@ function delayStyle(ms: number): CSSProperties {
   return { ["--anim-delay" as string]: `${ms}ms` } as CSSProperties;
 }
 
-const HEADLINE_WORDS = ["We", "build", "the", "systems", "Nigeria", "runs", "on."];
+const HEADLINE_LINE_1 = ["We", "build", "the", "systems"] as const;
+const HEADLINE_LINE_2 = ["Nigeria", "runs", "on."] as const;
+const HEADLINE_WORD_COUNT =
+  HEADLINE_LINE_1.length + HEADLINE_LINE_2.length;
 const STAGGER_MS = 60;
 const HEADLINE_TAIL_MS =
-  STAGGER_MS * (HEADLINE_WORDS.length - 1); // last word starts to enter
+  STAGGER_MS * (HEADLINE_WORD_COUNT - 1); // last word starts to enter
 const UNDERLINE_DELAY_MS = HEADLINE_TAIL_MS + 700; // after last word lands
 const SUBHEAD_DELAY_MS = HEADLINE_TAIL_MS + 200;
 const FOOTNOTE_DELAY_MS = HEADLINE_TAIL_MS + 600;
@@ -243,12 +248,8 @@ function Hero() {
       "
     >
       {/*
-        Layer order matters — DOM order = paint order (no explicit z-index on
-        any of these so each child remains in the section's stacking context
-        and its blend mode resolves against the cumulative backdrop):
-          1. Ejubejuailo  — luminosity-blended mask
-          2. Indigo wash  — #0B0E1A at 35% to unify the canvas
-          3. AdireGround  — circles flow over the entire width on top
+        Atmospheric stack (paint order): Ejubejuailo (screen) → wash → Adire →
+        right-edge radial wash → foreground column.
       */}
       <Ejubejuailo />
       <div
@@ -257,43 +258,89 @@ function Hero() {
       />
       <AdireGround />
 
-      {/* Editorial grid: headline bleeds 1 column into the gutter */}
+      {/* Indigo radial over right half — softens photograph studio edge into page */}
+      <div
+        aria-hidden="true"
+        className="
+          pointer-events-none absolute inset-y-0 right-0 w-1/2 z-[5]
+        "
+        style={{
+          background:
+            "radial-gradient(ellipse at right center, transparent 30%, #0B0E1A 75%)",
+        }}
+      />
+
+      {/* Content column — pull up into viewport; keep copy left & narrow vs Ejube */}
       <div
         className="
           relative z-10 mx-auto w-full max-w-[1440px]
-          flex-1 flex flex-col justify-center
+          flex flex-1 flex-col min-h-0 min-w-0
           px-5 sm:px-8 lg:px-14
-          pt-12 pb-32
+          -mt-7 sm:-mt-9 lg:-mt-12
+          pb-12 pt-0
         "
       >
-        <div className="grid grid-cols-12 gap-x-6">
-          <p
+        <div className="flex min-h-0 min-w-0 w-full flex-1 flex-col">
+          <Link
+            href="/"
+            aria-label="TEK NAIJA LTD"
             className="
-              col-span-12 lg:col-span-9 lg:col-start-2 lg:-ml-[8.333%]
-              anim-fade
-              font-mono text-[0.7rem] tracking-[0.22em] uppercase text-ochre
-              mb-8 lg:mb-12
+              isolate z-[15] relative
+              block w-fit shrink-0
+              focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-terracotta focus-visible:ring-offset-2 focus-visible:ring-offset-ink
             "
-            style={delayStyle(0)}
           >
-            <span aria-hidden className="mr-3 inline-block h-px w-8 align-middle bg-ochre" />
-            A Lagos technology holding company
-          </p>
+            <Image
+              src="/tek-naija-logo-clean.png"
+              alt="TEK NAIJA LTD"
+              width={1600}
+              height={400}
+              className="
+                block h-[clamp(176px,32vw,400px)] w-auto max-w-full
+                object-contain object-left
+                mix-blend-screen
+              "
+              sizes="(min-width: 1536px) 1420px, (min-width: 1024px) 94vw, 98vw"
+              priority
+            />
+          </Link>
 
           <h1
             className="
-              col-span-12 lg:col-span-10 lg:col-start-2 lg:-ml-[8.333%]
+              relative z-[15]
+              -mt-[clamp(2.5rem,6.35vw,5.35rem)] mb-8
+              w-full max-w-[min(100%,95vw)] lg:max-w-[min(92vw,calc(100%+4rem))]
+              shrink-0
               font-serif font-optical-display
               text-foreground
-              text-[clamp(2.75rem,12vw,9rem)]
-              leading-[0.92] tracking-[-0.015em]
+              text-[clamp(2.62rem,6.35vw,5.5rem)]
+              leading-[0.95] tracking-[-0.02em]
+              anim-fade
             "
+            style={{ ...delayStyle(0), lineHeight: 0.95 }}
           >
-            <span className="block">
-              {HEADLINE_WORDS.map((word, i) => {
-                const isAccent = word === "Nigeria";
+            <span className="flex min-w-0 flex-nowrap items-baseline gap-x-[0.28em] whitespace-nowrap">
+              {HEADLINE_LINE_1.map((word, idx) => {
+                const delayMs = idx * STAGGER_MS;
                 return (
-                  <RisingWord key={i} delayMs={i * STAGGER_MS} accent={isAccent}>
+                  <RisingWord key={word + idx} delayMs={delayMs} useParentGap>
+                    {word}
+                  </RisingWord>
+                );
+              })}
+            </span>
+            <span className="mt-[0.08em] flex min-w-0 flex-nowrap items-baseline gap-x-[0.28em] whitespace-nowrap">
+              {HEADLINE_LINE_2.map((word, idx) => {
+                const i = HEADLINE_LINE_1.length + idx;
+                const isAccent = word === "Nigeria";
+                const delayMs = i * STAGGER_MS;
+                return (
+                  <RisingWord
+                    key={word + idx}
+                    delayMs={delayMs}
+                    accent={isAccent}
+                    useParentGap
+                  >
                     {word}
                   </RisingWord>
                 );
@@ -303,12 +350,11 @@ function Hero() {
 
           <p
             className="
-              col-span-12 lg:col-span-7 lg:col-start-2 lg:-ml-[8.333%]
+              relative z-[15]
+              mb-0 max-w-[min(52ch,92vw)] lg:max-w-[min(52ch,min(92vw,45vw))]
+              shrink-0
+              font-sans text-[1.15rem] leading-[1.6] text-ivory/80
               anim-rise
-              mt-12 lg:mt-16
-              font-sans text-foreground-muted
-              text-[1.05rem] sm:text-[1.18rem] lg:text-[1.25rem]
-              leading-[1.6] max-w-subhead
             "
             style={delayStyle(SUBHEAD_DELAY_MS)}
           >
@@ -318,32 +364,27 @@ function Hero() {
             institutions a continent is still building. Precise. Permanent.
             Nigerian.
           </p>
-        </div>
-      </div>
 
-      {/* Bottom of viewport — the "infrastructure tell" */}
-      <div
-        className="
-          relative z-10 mx-auto w-full max-w-[1440px]
-          px-5 sm:px-8 lg:px-14
-          pb-8 lg:pb-12
-          anim-fade
-        "
-        style={delayStyle(FOOTNOTE_DELAY_MS)}
-      >
-        <p
-          className="
-            font-mono text-[0.7rem] sm:text-[0.75rem]
-            tracking-[0.18em] uppercase text-foreground-muted
-            flex flex-wrap items-center gap-x-3 gap-y-1
-          "
-        >
-          <span>Incorporated 08.01.2026</span>
-          <span aria-hidden className="text-ochre">—</span>
-          <span>Lagos, Nigeria</span>
-          <span aria-hidden className="text-ochre">—</span>
-          <span>Active across 4 sectors</span>
-        </p>
+          <div className="min-h-4 flex-1 shrink-0" aria-hidden />
+
+          <p
+            className="
+              relative z-[15]
+              shrink-0
+              flex flex-wrap items-center gap-x-3 gap-y-1
+              font-mono text-[0.7rem] sm:text-[0.75rem]
+              uppercase tracking-[0.18em] text-foreground-muted
+              anim-fade
+            "
+            style={delayStyle(FOOTNOTE_DELAY_MS)}
+          >
+            <span>Incorporated 08.01.2026</span>
+            <span aria-hidden className="text-ochre">—</span>
+            <span>Lagos, Nigeria</span>
+            <span aria-hidden className="text-ochre">—</span>
+            <span>Active across 4 sectors</span>
+          </p>
+        </div>
       </div>
     </section>
   );
@@ -353,16 +394,19 @@ function RisingWord({
   children,
   delayMs,
   accent,
+  useParentGap,
 }: {
   children: React.ReactNode;
   delayMs: number;
   accent?: boolean;
+  useParentGap?: boolean;
 }) {
+  const outerCls = useParentGap
+    ? "inline-block overflow-hidden align-baseline"
+    : "inline-block overflow-hidden align-baseline mr-[0.25em] last:mr-0";
+
   return (
-    <span
-      className="inline-block overflow-hidden align-baseline mr-[0.25em] last:mr-0"
-      style={{ paddingBottom: "0.08em" }}
-    >
+    <span className={outerCls} style={{ paddingBottom: "0.08em" }}>
       <span className="inline-block anim-rise" style={delayStyle(delayMs)}>
         {accent ? (
           <span className="relative inline-block">
@@ -601,6 +645,16 @@ function Voices({ testimonials }: { testimonials: Testimonial[] }) {
         py-24 lg:py-40
       "
     >
+      <HeritageImage
+        src="/Cowry.jpeg"
+        positionClassName="absolute right-0 top-1/2 -translate-y-1/2 w-[45vw] h-[85vh] max-h-[900px] -z-10"
+        opacity={0.2}
+        blendMode="screen"
+        maskImage="radial-gradient(ellipse at right center, black 0%, rgba(0,0,0,0.6) 40%, transparent 70%)"
+        sizes="45vw"
+        objectPosition="right center"
+        objectFit="contain"
+      />
       <div className="grid grid-cols-12 gap-x-6">
         <p className="col-span-12 lg:col-span-3 font-mono text-[0.7rem] tracking-[0.22em] uppercase text-ochre">
           Voices
@@ -637,40 +691,50 @@ function FromTheDesk({ posts }: { posts: PostRow[] }) {
         py-24 lg:py-40
       "
     >
-      <header className="grid grid-cols-12 gap-x-6 mb-16 lg:mb-20">
-        <p className="col-span-12 lg:col-span-3 font-mono text-[0.7rem] tracking-[0.22em] uppercase text-ochre">
-          From the desk
-        </p>
-        <div className="col-span-12 lg:col-span-9 mt-4 lg:mt-0 flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
-          <h2
-            id="desk-heading"
-            className="
-              font-serif font-optical-display leading-[1.02]
-              text-[clamp(2rem,4.4vw,3.5rem)] tracking-[-0.01em]
-              text-foreground max-w-[20ch]
-            "
-          >
-            Notes from the practice.
-          </h2>
-          <Link
-            href="/insights"
-            className="
-              group inline-flex items-baseline gap-2
-              font-sans text-[0.9rem] tracking-wide text-foreground
-              transition-colors hover:text-terracotta
-              self-start lg:self-end
-            "
-          >
-            <span className="border-b border-ochre/60 pb-0.5 transition-colors group-hover:border-terracotta">
-              All insights
-            </span>
-            <span
-              aria-hidden
-              className="inline-block transition-transform duration-300 ease-out group-hover:translate-x-1.5"
+      <header className="relative mb-16 lg:mb-20">
+        <HeritageImage
+          src="/fabric_7.avif"
+          positionClassName="absolute left-1/2 top-0 bottom-0 -translate-x-1/2 w-screen max-w-none -z-10"
+          opacity={0.05}
+          blendMode="screen"
+          maskImage="radial-gradient(ellipse 70% 60% at center, rgba(0,0,0,1) 0%, rgba(0,0,0,0.7) 50%, transparent 100%)"
+          sizes="100vw"
+        />
+        <div className="relative z-10 grid grid-cols-12 gap-x-6">
+          <p className="col-span-12 lg:col-span-3 font-mono text-[0.7rem] tracking-[0.22em] uppercase text-ochre">
+            From the desk
+          </p>
+          <div className="col-span-12 lg:col-span-9 mt-4 lg:mt-0 flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
+            <h2
+              id="desk-heading"
+              className="
+                font-serif font-optical-display leading-[1.02]
+                text-[clamp(2rem,4.4vw,3.5rem)] tracking-[-0.01em]
+                text-foreground max-w-[20ch]
+              "
             >
-              →
-            </span>
-          </Link>
+              Notes from the practice.
+            </h2>
+            <Link
+              href="/insights"
+              className="
+                group inline-flex items-baseline gap-2
+                font-sans text-[0.9rem] tracking-wide text-foreground
+                transition-colors hover:text-terracotta
+                self-start lg:self-end
+              "
+            >
+              <span className="border-b border-ochre/60 pb-0.5 transition-colors group-hover:border-terracotta">
+                All insights
+              </span>
+              <span
+                aria-hidden
+                className="inline-block transition-transform duration-300 ease-out group-hover:translate-x-1.5"
+              >
+                →
+              </span>
+            </Link>
+          </div>
         </div>
       </header>
 

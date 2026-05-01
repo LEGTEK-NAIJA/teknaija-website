@@ -3,22 +3,20 @@ import Image from "next/image";
 /**
  * Ejubejuailo
  * --------------------------------------------------------------------------
- * The Iyoba (Queen Mother) pendant mask of Benin, deployed as the
- * atmospheric register of the hero — never a logo, never a decoration; a
- * sovereign image the practice publicly stands beside.
+ * Iyoba (Queen Mother) pendant mask of Benin — Queen Idia. A heritage
+ * marker, not a decoration; a sovereign image the practice publicly stands
+ * beside.
  *
  * Composition rules (set by the design):
- *   • Wrapper sized to the image's native aspect (1483 × 2000) at full
- *     hero height, anchored to the right edge, then translated 45% of its
- *     own width off-screen. ~55% of the face remains visible.
- *   • A two-axis mask dissolves the LEFT edge into the text column
- *     (transparent → opaque over 40%) and the BOTTOM edge into the
- *     section seam (opaque → transparent over the lower 20%).
- *   • mix-blend-mode: luminosity (in globals.css) collapses the
- *     photograph's chroma into the indigo ground; the form is preserved,
- *     the colour belongs to the canvas.
- *   • Static opacity 0.55 — no scroll choreography. The composition is
- *     one atmospheric whole, not a progressive reveal.
+ *   • Anchored bottom-right of the hero; translated up slightly on the Y axis
+ *     so more of the figure reads in frame while the headline column stays left.
+ *   • The full mask is visible (object-fit: contain, object-position:
+ *     right bottom). No cropping at the top, bottom, or right.
+ *   • A horizontal mask dissolves the LEFT edge so the headline column
+ *     reads cleanly; the right and bottom edges are fully visible.
+ *   • mix-blend-mode: screen (in globals.css) — greys merge into the ink
+ *     ground; ivory / warm tones stay legible against the hero.
+ *   • Static opacity 0.65 — present without crowding headline space.
  *
  * Delivered through next/image so the optimizer serves AVIF / WebP at the
  * actual rendered size.
@@ -28,12 +26,13 @@ type Props = {
   className?: string;
 };
 
-// Two stacked gradients composited via `mask-composite: intersect` —
-// the image is opaque only where BOTH gradients are opaque.
-// 1) horizontal: transparent on the left for the first 40%, opaque after.
-// 2) vertical: opaque for the top 80%, fading to transparent for the
-//    bottom 20% so the mask dissolves into the section seam.
-const FADE_MASK = `linear-gradient(to right, transparent 0%, black 40%), linear-gradient(to bottom, black 80%, transparent 100%)`;
+// Softer horizontal dissolve into the headline column — wide transparent
+// span so typography stays left; blend completes mid-panel (55vw strip).
+const MASK_H =
+  "linear-gradient(to right, transparent 0%, transparent 22%, rgba(0,0,0,0.12) 38%, rgba(0,0,0,0.55) 55%, rgba(0,0,0,0.88) 70%, black 82%)";
+// Fades top / bottom of the photograph into the indigo ground.
+const MASK_V =
+  "linear-gradient(to bottom, transparent 0%, black 12%, black 88%, transparent 100%)";
 
 export function Ejubejuailo({ className = "" }: Props) {
   return (
@@ -43,33 +42,62 @@ export function Ejubejuailo({ className = "" }: Props) {
       className={`
         ejubejuailo
         pointer-events-none absolute
-        top-0 right-0
-        h-full aspect-[1483/2000]
-        translate-x-[45%]
+        right-0 bottom-0
+        w-[55vw] h-[90%]
+        origin-bottom
+        -translate-y-[min(14vh,12rem)]
         ${className}
       `}
       style={{
-        WebkitMaskImage: FADE_MASK,
-        maskImage: FADE_MASK,
+        WebkitMaskImage: MASK_H,
+        maskImage: MASK_H,
         WebkitMaskRepeat: "no-repeat",
         maskRepeat: "no-repeat",
         WebkitMaskSize: "100% 100%",
         maskSize: "100% 100%",
-        WebkitMaskComposite: "source-in",
-        maskComposite: "intersect",
       }}
     >
-      <Image
-        src="/ejubejuailo.jpg"
-        alt=""
-        fill
-        sizes="60vw"
-        priority
-        className="
-          object-cover object-center
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0"
+        style={{
+          WebkitMaskImage: MASK_V,
+          maskImage: MASK_V,
+          WebkitMaskRepeat: "no-repeat",
+          maskRepeat: "no-repeat",
+          WebkitMaskSize: "100% 100%",
+          maskSize: "100% 100%",
+        }}
+      >
+        <Image
+          src="/ejubejuailo.jpg"
+          alt=""
+          fill
+          sizes="55vw"
+          priority
+          className="
+          object-contain object-right-bottom
           select-none
         "
-      />
+        />
+        {/* Edge feather into page ink — photograph uses screen blend on .ejubejuailo */}
+        <div
+          aria-hidden
+          className="absolute inset-0 pointer-events-none"
+          style={{
+            background:
+              "linear-gradient(to left, transparent 60%, rgb(11 14 26) 100%)",
+          }}
+        />
+        <div
+          aria-hidden
+          className="absolute inset-0 pointer-events-none"
+          style={{
+            background:
+              "linear-gradient(to right, transparent 60%, rgb(11 14 26) 100%)",
+          }}
+        />
+      </div>
     </div>
   );
 }

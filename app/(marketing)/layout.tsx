@@ -8,7 +8,7 @@ export default function MarketingLayout({ children }: { children: ReactNode }) {
     <>
       <AchiStrip />
       <MarketingNav />
-      <main id="main" className="flex-1">
+      <main id="main" className="flex-1 isolate">
         {children}
       </main>
       <MarketingFooter />

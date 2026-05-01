@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 
 export type CaseSector =
@@ -24,9 +25,6 @@ export type CaseRowProps = {
  * CaseRow — a single editorial spread on the homepage's Selected Work.
  * Image left 60%, metadata right 40%. Reverses on alternating rows so the
  * page reads with rhythm rather than as a stack.
- *
- * NOTE: Image area uses a stylised SVG placeholder until production
- * screenshots are supplied (CLAUDE.md §7).
  */
 export function CaseRow({
   index,
@@ -158,6 +156,13 @@ function CaseImage({
   title: string;
   status: CaseRowProps["status"];
 }) {
+  const shotSrc =
+    variant === "justice"
+      ? "/LEGTEK_NAIJA_SCREENSHOT.png"
+      : variant === "commerce"
+        ? "/STK_Screenshot.png"
+        : null;
+
   return (
     <figure
       className="
@@ -167,15 +172,24 @@ function CaseImage({
       "
     >
       <div className="absolute inset-0">
-        {variant === "justice" && <JusticeArt />}
-        {variant === "commerce" && <CommerceArt />}
-        {variant === "forthcoming" && <ForthcomingArt />}
+        {shotSrc ? (
+          <Image
+            src={shotSrc}
+            alt=""
+            fill
+            sizes="(min-width: 1024px) 60vw, 100vw"
+            className="object-cover object-[center_15%]"
+            priority={false}
+          />
+        ) : (
+          <ForthcomingArt />
+        )}
       </div>
 
-      {/* Top-left mono caption — the "infrastructure tell" on each frame */}
+      {/* Bottom-left mono caption — the "infrastructure tell" on each frame */}
       <figcaption
         className="
-          absolute left-4 top-4 z-10 flex items-center gap-3
+          absolute bottom-4 left-4 z-10 flex items-center gap-3
           font-mono text-[0.65rem] tracking-[0.18em] uppercase text-foreground-muted
         "
       >
@@ -203,236 +217,12 @@ function CaseImage({
       >
         {title}
       </span>
-
-      {/* Awaiting imagery whisper — TODO: replace with production screenshots */}
-      <span
-        aria-hidden
-        className="
-          absolute bottom-4 left-4 z-10
-          font-mono text-[0.55rem] tracking-[0.22em] uppercase text-foreground-muted/50
-        "
-      >
-        // imagery pending
-      </span>
     </figure>
   );
 }
 
 /* -------------------------------------------------------------------------- */
-/* Per-case stylised art — replaced with real product mockups in due course.  */
-
-function JusticeArt() {
-  // A hearing-room window: arched indigo bay, floor lines receding to a vanishing point.
-  return (
-    <svg
-      viewBox="0 0 800 600"
-      preserveAspectRatio="xMidYMid slice"
-      className="h-full w-full"
-    >
-      <defs>
-        <linearGradient id="jx-bg" x1="0" x2="0" y1="0" y2="1">
-          <stop offset="0%" stopColor="#0e1430" />
-          <stop offset="100%" stopColor="#060814" />
-        </linearGradient>
-      </defs>
-      <rect width="800" height="600" fill="url(#jx-bg)" />
-
-      {/* Floor perspective lines */}
-      <g stroke="#d9a441" strokeOpacity="0.18">
-        {Array.from({ length: 12 }).map((_, i) => (
-          <line
-            key={i}
-            x1={400}
-            y1={420}
-            x2={(i / 11) * 800}
-            y2={600}
-            strokeWidth="0.7"
-          />
-        ))}
-        <line x1="0" y1="420" x2="800" y2="420" strokeWidth="1" />
-      </g>
-
-      {/* Three arches: counsel · bench · counsel */}
-      <g stroke="#d9a441" fill="none">
-        <path
-          d="M 120 420 L 120 220 Q 120 130 220 130 Q 320 130 320 220 L 320 420"
-          strokeWidth="1.4"
-          opacity="0.85"
-        />
-        <path
-          d="M 320 420 L 320 180 Q 320 80 400 80 Q 480 80 480 180 L 480 420"
-          strokeWidth="1.6"
-          opacity="1"
-        />
-        <path
-          d="M 480 420 L 480 220 Q 480 130 580 130 Q 680 130 680 220 L 680 420"
-          strokeWidth="1.4"
-          opacity="0.85"
-        />
-      </g>
-
-      {/* Bench seal — terracotta circle with concentric procedural rings */}
-      <g transform="translate(400, 250)">
-        <circle r="56" fill="#c8553d" opacity="0.9" />
-        <circle r="56" fill="none" stroke="#f4efe6" strokeOpacity="0.4" />
-        <circle r="42" fill="none" stroke="#f4efe6" strokeOpacity="0.5" />
-        <circle r="28" fill="none" stroke="#f4efe6" strokeOpacity="0.7" />
-        <text
-          y="6"
-          textAnchor="middle"
-          fontFamily="'JetBrains Mono', ui-monospace, monospace"
-          fontSize="11"
-          letterSpacing="2"
-          fill="#f4efe6"
-        >
-          XIX · CII
-        </text>
-      </g>
-
-      {/* Caption strip — mock procedural badge */}
-      <g transform="translate(0, 470)">
-        <line x1="60" y1="0" x2="740" y2="0" stroke="#d9a441" strokeOpacity="0.4" />
-        <text
-          x="60"
-          y="28"
-          fontFamily="'JetBrains Mono', ui-monospace, monospace"
-          fontSize="13"
-          letterSpacing="3"
-          fill="#f4efe6"
-          fillOpacity="0.85"
-        >
-          PART XIV · ARTICLE 71 · HEARING ROOM 03
-        </text>
-        <text
-          x="60"
-          y="56"
-          fontFamily="'JetBrains Mono', ui-monospace, monospace"
-          fontSize="11"
-          letterSpacing="2"
-          fill="#f4efe6"
-          fillOpacity="0.55"
-        >
-          TRANSCRIPT · LIVE · ROLES (7) PRESENT
-        </text>
-        <text
-          x="740"
-          y="28"
-          textAnchor="end"
-          fontFamily="'JetBrains Mono', ui-monospace, monospace"
-          fontSize="11"
-          letterSpacing="2"
-          fill="#d9a441"
-        >
-          02:14:08
-        </text>
-      </g>
-    </svg>
-  );
-}
-
-function CommerceArt() {
-  // A trade ledger: stacked SKU bars in ochre, clay, terracotta — the ports of Lagos in shorthand.
-  return (
-    <svg
-      viewBox="0 0 800 600"
-      preserveAspectRatio="xMidYMid slice"
-      className="h-full w-full"
-    >
-      <defs>
-        <linearGradient id="cx-bg" x1="0" x2="1" y1="0" y2="1">
-          <stop offset="0%" stopColor="#0c1024" />
-          <stop offset="100%" stopColor="#060814" />
-        </linearGradient>
-      </defs>
-      <rect width="800" height="600" fill="url(#cx-bg)" />
-
-      {/* Grid */}
-      <g stroke="#d9a441" strokeOpacity="0.12">
-        {Array.from({ length: 9 }).map((_, i) => (
-          <line key={`v${i}`} x1={(i / 8) * 800} y1="0" x2={(i / 8) * 800} y2="600" />
-        ))}
-        {Array.from({ length: 7 }).map((_, i) => (
-          <line key={`h${i}`} x1="0" y1={(i / 6) * 600} x2="800" y2={(i / 6) * 600} />
-        ))}
-      </g>
-
-      {/* Stacked container bars */}
-      <g>
-        {[
-          { y: 100, w: 540, fill: "#c8553d", opacity: 0.85, label: "BAKING ESSENTIALS" },
-          { y: 160, w: 420, fill: "#d9a441", opacity: 0.85, label: "POULTRY" },
-          { y: 220, w: 600, fill: "#8b4a2b", opacity: 0.9, label: "YAM · UK BOUND" },
-          { y: 280, w: 360, fill: "#2a3270", opacity: 0.95, label: "ANCILLARY" },
-          { y: 340, w: 480, fill: "#c8553d", opacity: 0.5, label: "PIPELINE" },
-        ].map((b, i) => (
-          <g key={i}>
-            <rect x={80} y={b.y} width={b.w} height={28} fill={b.fill} opacity={b.opacity} />
-            <text
-              x={88}
-              y={b.y + 19}
-              fontFamily="'JetBrains Mono', ui-monospace, monospace"
-              fontSize="11"
-              letterSpacing="2.4"
-              fill="#f4efe6"
-              fillOpacity="0.95"
-            >
-              {b.label}
-            </text>
-            <text
-              x={80 + b.w + 14}
-              y={b.y + 19}
-              fontFamily="'JetBrains Mono', ui-monospace, monospace"
-              fontSize="11"
-              letterSpacing="1.6"
-              fill="#f4efe6"
-              fillOpacity="0.55"
-            >
-              {Math.round(b.w / 6)} SKU
-            </text>
-          </g>
-        ))}
-      </g>
-
-      {/* Footer ledger row */}
-      <g transform="translate(0, 470)">
-        <line x1="60" y1="0" x2="740" y2="0" stroke="#d9a441" strokeOpacity="0.4" />
-        <text
-          x="60"
-          y="28"
-          fontFamily="'JetBrains Mono', ui-monospace, monospace"
-          fontSize="13"
-          letterSpacing="3"
-          fill="#f4efe6"
-          fillOpacity="0.85"
-        >
-          RFQ · KYC · PAYMENT · DOCS
-        </text>
-        <text
-          x="60"
-          y="56"
-          fontFamily="'JetBrains Mono', ui-monospace, monospace"
-          fontSize="11"
-          letterSpacing="2"
-          fill="#f4efe6"
-          fillOpacity="0.55"
-        >
-          APAPA → FELIXSTOWE · 17 OPEN ORDERS
-        </text>
-        <text
-          x="740"
-          y="28"
-          textAnchor="end"
-          fontFamily="'JetBrains Mono', ui-monospace, monospace"
-          fontSize="11"
-          letterSpacing="2"
-          fill="#d9a441"
-        >
-          NGN ▲ 3.2%
-        </text>
-      </g>
-    </svg>
-  );
-}
+/* Forthcoming placeholder — sparse blueprint until the case ships publicly.  */
 
 function ForthcomingArt() {
   // A sparse blueprint grid with a single bright node — work in progress.

@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 
 const NAV_ITEMS = [
@@ -74,7 +75,20 @@ export function MarketingFooter() {
 function IdentityColumn() {
   return (
     <div className="flex flex-col gap-5">
-      <Link href="/" aria-label="TEK NAIJA — home" className="inline-block">
+      <Link
+        href="/"
+        aria-label="TEK NAIJA — home"
+        className="inline-flex flex-col gap-3 w-fit"
+      >
+        <Image
+          src="/tek-naija-logo-clean.png"
+          alt=""
+          width={336}
+          height={56}
+          className="h-[56px] w-auto object-contain mix-blend-screen"
+          sizes="336px"
+          priority={false}
+        />
         <span
           className="
             font-serif text-[1.4rem] uppercase tracking-[0.18em]
