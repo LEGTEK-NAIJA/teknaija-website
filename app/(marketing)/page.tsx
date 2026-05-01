@@ -4,11 +4,16 @@ import type { Metadata } from "next";
 import { AdireGround } from "@/components/motifs/AdireGround";
 import { AsoOkeDivider } from "@/components/motifs/AsoOkeDivider";
 import { Ejubejuailo } from "@/components/motifs/Ejubejuailo";
-import { CaseRow } from "@/components/marketing/CaseRow";
+import {
+  CaseRow,
+  type CaseSector,
+  type CaseVariant,
+} from "@/components/marketing/CaseRow";
 import {
   TestimonialCarousel,
   type Testimonial,
 } from "@/components/marketing/TestimonialCarousel";
+import { createSupabaseServerClient } from "@/lib/supabase/server";
 
 export const metadata: Metadata = {
   title:
@@ -16,6 +21,168 @@ export const metadata: Metadata = {
   description:
     "TEK NAIJA is a Lagos-headquartered technology holding company shipping sovereign-grade software for justice, commerce, and the institutions of a continent in motion.",
 };
+
+/* -------------------------------------------------------------------------- */
+/* Supabase row shapes (minimal — matches CLAUDE.md CMS tables).              */
+/* -------------------------------------------------------------------------- */
+
+type TestimonialRow = {
+  quote: string;
+  author_name: string | null;
+  author_role: string | null;
+  author_org: string | null;
+};
+
+type PostRow = {
+  slug: string;
+  title: string | null;
+  dek: string | null;
+  published_at: string | null;
+};
+
+type ProjectRow = {
+  slug: string | null;
+  title: string | null;
+  sector: string | null;
+  status: string | null;
+  body: string | null;
+  outcomes?: unknown;
+};
+
+async function fetchHomepageData() {
+  const supabase = await createSupabaseServerClient();
+
+  const [testimonialsRes, postsRes, projectsRes] = await Promise.all([
+    supabase
+      .from("testimonials")
+      .select("quote, author_name, author_role, author_org")
+      .eq("active", true)
+      .order("id", { ascending: true }),
+    supabase
+      .from("posts")
+      .select("slug, title, dek, published_at")
+      .eq("status", "published")
+      .order("published_at", { ascending: false })
+      .limit(3),
+    supabase
+      .from("projects")
+      .select("slug, title, sector, status, body, outcomes")
+      .eq("featured", true)
+      .order("display_order", { ascending: true }),
+  ]);
+
+  // Diagnostic — visible in terminal during `npm run dev` and in Vercel function logs.
+  console.log("[homepage] testimonials →", {
+    count: testimonialsRes.data?.length ?? 0,
+    error: testimonialsRes.error ?? null,
+    sample: testimonialsRes.data?.[0] ?? null,
+  });
+  console.log("[homepage] posts →", {
+    count: postsRes.data?.length ?? 0,
+    error: postsRes.error ?? null,
+    sample: postsRes.data?.[0] ?? null,
+  });
+  console.log("[homepage] projects →", {
+    count: projectsRes.data?.length ?? 0,
+    error: projectsRes.error ?? null,
+    sample: projectsRes.data?.[0] ?? null,
+  });
+
+  const testimonials: TestimonialRow[] = testimonialsRes.error
+    ? []
+    : (testimonialsRes.data as TestimonialRow[]) ?? [];
+
+  const posts: PostRow[] = postsRes.error ? [] : (postsRes.data as PostRow[]) ?? [];
+
+  const projects: ProjectRow[] = projectsRes.error
+    ? []
+    : (projectsRes.data as ProjectRow[]) ?? [];
+
+  return {
+    testimonials: testimonials.map(
+      (t): Testimonial => ({
+        quote: t.quote ?? "",
+        author: t.author_name ?? "",
+        role: t.author_role ?? "",
+        org: t.author_org ?? "",
+      })
+    ),
+    posts,
+    projects,
+  };
+}
+
+function toCaseSector(raw: string | null | undefined): CaseSector {
+  const t = raw ?? "";
+  if (
+    /justice|regulatory|litigation|arbitration|dispute|hearing|court|procedural/i.test(
+      t
+    )
+  ) {
+    return "JUSTICE INFRASTRUCTURE";
+  }
+  if (/commerce|trade|export|supply|bakery|poultry|agric/i.test(t)) {
+    return "TRADE & COMMERCE";
+  }
+  return "LEGAL INTELLIGENCE";
+}
+
+function toCaseVariant(
+  slug: string | null | undefined,
+  status: string | null | undefined
+): CaseVariant {
+  const st = (status ?? "").toLowerCase();
+  if (st === "forthcoming") return "forthcoming";
+  const sl = (slug ?? "").toLowerCase();
+  if (sl.includes("stk") || sl.includes("trade") || sl.includes("commerce")) {
+    return "commerce";
+  }
+  if (sl.includes("litigate")) return "forthcoming";
+  return "justice";
+}
+
+function toCaseDisplayStatus(
+  status: string | null | undefined
+): "Live" | "Forthcoming" | "Active" {
+  const s = (status ?? "").toLowerCase();
+  if (s === "forthcoming") return "Forthcoming";
+  if (s === "archived") return "Active";
+  return "Live";
+}
+
+function outcomesToMeta(
+  outcomes: unknown
+): { label: string; value: string }[] | undefined {
+  if (!outcomes) return undefined;
+  if (!Array.isArray(outcomes)) return undefined;
+  const pairs = outcomes.filter(
+    (x): x is { label: string; value: string } =>
+      Boolean(x) &&
+      typeof x === "object" &&
+      "label" in x &&
+      "value" in x &&
+      typeof (x as { label: unknown }).label === "string" &&
+      typeof (x as { value: unknown }).value === "string"
+  );
+  return pairs.length > 0 ? pairs : undefined;
+}
+
+function formatPublishDate(
+  iso: string | null | undefined
+): { display: string; isoDay: string } {
+  if (!iso) return { display: "", isoDay: "" };
+  const d = new Date(iso);
+  if (Number.isNaN(d.getTime()))
+    return { display: iso, isoDay: iso.slice(0, 10) };
+  return {
+    display: d.toLocaleDateString("en-GB", {
+      day: "numeric",
+      month: "long",
+      year: "numeric",
+    }),
+    isoDay: d.toISOString().slice(0, 10),
+  };
+}
 
 /* -------------------------------------------------------------------------- */
 /* Helpers                                                                     */
@@ -37,18 +204,25 @@ const FOOTNOTE_DELAY_MS = HEADLINE_TAIL_MS + 600;
 /* Page                                                                        */
 /* -------------------------------------------------------------------------- */
 
-export default function HomePage() {
+export default async function HomePage() {
+  const { testimonials, posts, projects } = await fetchHomepageData();
+
+  // TEMP DEBUG — remove once data flow is verified.
+  console.log("PROJECTS:", JSON.stringify(projects));
+  console.log("TESTIMONIALS:", JSON.stringify(testimonials));
+  console.log("POSTS:", JSON.stringify(posts));
+
   return (
     <>
       <Hero />
       <AsoOkeDivider className="mx-auto max-w-[1440px] px-5 sm:px-8 lg:px-14" />
-      <SelectedWork />
+      <SelectedWork projects={projects} />
       <AsoOkeDivider className="mx-auto max-w-[1440px] px-5 sm:px-8 lg:px-14" />
       <CapabilitiesPreview />
       <AsoOkeDivider className="mx-auto max-w-[1440px] px-5 sm:px-8 lg:px-14" />
-      <Voices />
+      <Voices testimonials={testimonials} />
       <AsoOkeDivider className="mx-auto max-w-[1440px] px-5 sm:px-8 lg:px-14" />
-      <FromTheDesk />
+      <FromTheDesk posts={posts} />
     </>
   );
 }
@@ -219,7 +393,11 @@ function RisingWord({
 /* Section 2 — Selected Work                                                   */
 /* -------------------------------------------------------------------------- */
 
-function SelectedWork() {
+function SelectedWork({ projects }: { projects: ProjectRow[] }) {
+  const rows = projects.filter((p): p is ProjectRow & { slug: string; title: string } =>
+    Boolean(p.slug && p.title)
+  );
+
   return (
     <section
       id="work"
@@ -255,57 +433,24 @@ function SelectedWork() {
       </header>
 
       <div className="flex flex-col gap-24 lg:gap-40">
-        <CaseRow
-          index={1}
-          sector="JUSTICE INFRASTRUCTURE"
-          title="LEGTEK NAIJA"
-          scriptSubtitle="Èkó / sovereign dispute resolution"
-          status="Live"
-          href="/work/legtek-naija"
-          variant="justice"
-          body="A digital architecture for the resolution of disputes. Nineteen procedural parts, one hundred and two articles, real-time transcription via Gemini Live, and a multi-role case management system spanning Party, Counsel, Neutral, Case Manager, and Financial Administrator. Built so that arbitration in Nigeria can convene in a hearing room or a browser tab — without losing the gravity of either."
-          meta={[
-            { label: "Sector", value: "Justice & Regulatory" },
-            { label: "Status", value: "Live · legtek.ng" },
-            { label: "Procedural parts", value: "19" },
-            { label: "Articles", value: "102" },
-          ]}
-        />
-
-        <CaseRow
-          index={2}
-          sector="TRADE & COMMERCE"
-          title="STK INDUSTRIES"
-          scriptSubtitle="Apapa / Felixstowe trade lane"
-          status="Active"
-          href="/work/stk-industries"
-          variant="commerce"
-          reverse
-          body="Trade infrastructure for Nigerian agricultural commodities — baking essentials, poultry, yam to the United Kingdom. The platform handles the full cycle: KYC and counterparty verification, request-for-quote, payment rails, and the export documentation that customs in two jurisdictions actually want to see. Inventory is reconciled at SKU level; margins are visible from origin to wharf."
-          meta={[
-            { label: "Sector", value: "Commerce & Export" },
-            { label: "Status", value: "Active · trading" },
-            { label: "Trade lane", value: "NG → UK" },
-            { label: "Catalogue", value: "Multi-SKU" },
-          ]}
-        />
-
-        <CaseRow
-          index={3}
-          sector="LEGAL INTELLIGENCE"
-          title="LITIGATEIQ"
-          scriptSubtitle="Forthcoming / private beta"
-          status="Forthcoming"
-          href="/work/litigateiq"
-          variant="forthcoming"
-          body="An evidentiary intelligence layer for Nigerian litigation. Document review at the volume contemporary commercial cases now demand, precedent retrieval against the Nigerian Weekly Law Reports, and submission-grade citation tooling built around how lead counsel actually work in chambers. Currently in private development with anchor firms in Lagos and Abuja."
-          meta={[
-            { label: "Sector", value: "Legal AI" },
-            { label: "Status", value: "Private beta" },
-            { label: "Cohort", value: "Lagos / Abuja" },
-            { label: "Release", value: "TBA" },
-          ]}
-        />
+        {rows.map((project, idx) => {
+          const subtitle = undefined;
+          return (
+            <CaseRow
+              key={project.slug}
+              index={idx + 1}
+              sector={toCaseSector(project.sector)}
+              title={project.title}
+              scriptSubtitle={subtitle}
+              status={toCaseDisplayStatus(project.status)}
+              href={`/work/${project.slug}`}
+              variant={toCaseVariant(project.slug, project.status)}
+              reverse={idx % 2 === 1}
+              body={(project.body ?? "").trim()}
+              meta={outcomesToMeta(project.outcomes)}
+            />
+          );
+        })}
       </div>
     </section>
   );
@@ -445,34 +590,7 @@ function CapabilitiesPreview() {
 /* Section 4 — Voices                                                          */
 /* -------------------------------------------------------------------------- */
 
-// TODO(CLAUDE.md §7): Replace with real, named testimonials from clients.
-// Seeded with abstracted institutional roles (no fabricated identities)
-// pending attribution sign-off from anchor partners.
-const TESTIMONIALS: Testimonial[] = [
-  {
-    quote:
-      "TEK NAIJA built us infrastructure that survives a power cut and a public hearing in the same week. That is the bar in this market, and they meet it.",
-    author: "Senior Counsel",
-    role: "Commercial Practice",
-    org: "Lagos chambers",
-  },
-  {
-    quote:
-      "They write code the way good lawyers write submissions: with discipline, with citations, and with the discipline of knowing what to leave out.",
-    author: "Director",
-    role: "Regulatory Affairs",
-    org: "Federal partner",
-  },
-  {
-    quote:
-      "Nigerian software has had a credibility deficit for a decade. This is the team closing it.",
-    author: "Managing Partner",
-    role: "Investment Office",
-    org: "West Africa",
-  },
-];
-
-function Voices() {
+function Voices({ testimonials }: { testimonials: Testimonial[] }) {
   return (
     <section
       aria-labelledby="voices-heading"
@@ -492,7 +610,7 @@ function Voices() {
         </h2>
 
         <div className="col-span-12 lg:col-span-9 mt-8 lg:mt-0 relative pb-20 lg:pb-0">
-          <TestimonialCarousel items={TESTIMONIALS} />
+          <TestimonialCarousel items={testimonials} />
         </div>
       </div>
     </section>
@@ -503,36 +621,12 @@ function Voices() {
 /* Section 5 — From the desk (Insights preview)                                */
 /* -------------------------------------------------------------------------- */
 
-// TODO(CLAUDE.md §7): Replace with live posts from the Supabase `posts` table
-// once the CMS lands. Slugs follow the literal /insights/[slug] route.
-const RECENT_POSTS = [
-  {
-    slug: "nigerian-dispute-resolution-architecture",
-    title: "Why Nigerian dispute resolution needs its own architecture",
-    dek: "The case for treating procedural rules as a system specification — and why most platforms get this exactly backwards.",
-    date: "April 22, 2026",
-    dateISO: "2026-04-22",
-    author: "Sanctus Ojonimi Ejeh",
-  },
-  {
-    slug: "building-for-the-slow-internet",
-    title: "Building for the slow internet",
-    dek: "Performance budgets are a Lagos question before they are a Vercel question. A note on the discipline of building for everywhere.",
-    date: "March 15, 2026",
-    dateISO: "2026-03-15",
-    author: "Joseph Ugbede Ejeh",
-  },
-  {
-    slug: "on-sovereignty-and-software",
-    title: "On sovereignty and software",
-    dek: "If the institutions of a continent in motion are going to run on software, the software has to be built for them — not adapted to them.",
-    date: "February 8, 2026",
-    dateISO: "2026-02-08",
-    author: "Sanctus Ojonimi Ejeh",
-  },
-] as const;
+function FromTheDesk({ posts }: { posts: PostRow[] }) {
+  const rows = posts.filter(
+    (p): p is PostRow & { slug: string; title: string } =>
+      Boolean(p.slug && p.title)
+  );
 
-function FromTheDesk() {
   return (
     <section
       aria-labelledby="desk-heading"
@@ -581,55 +675,59 @@ function FromTheDesk() {
       </header>
 
       <ol className="flex flex-col">
-        {RECENT_POSTS.map((post) => (
-          <li key={post.slug}>
-            <Link
-              href={`/insights/${post.slug}`}
-              className="
-                group grid grid-cols-12 items-baseline gap-x-6 gap-y-3
-                border-t border-border-subtle py-8 lg:py-10
-                transition-colors
-              "
-            >
-              <time
-                dateTime={post.dateISO}
+        {rows.map((post) => {
+          const { display, isoDay } = formatPublishDate(post.published_at);
+
+          return (
+            <li key={post.slug}>
+              <Link
+                href={`/insights/${post.slug}`}
                 className="
-                  col-span-12 md:col-span-2
-                  font-mono text-[0.7rem] tracking-[0.18em] uppercase text-foreground-muted
+                  group grid grid-cols-12 items-baseline gap-x-6 gap-y-3
+                  border-t border-border-subtle py-8 lg:py-10
+                  transition-colors
                 "
               >
-                {post.date}
-              </time>
-
-              <div className="col-span-12 md:col-span-7">
-                <h3
+                <time
+                  dateTime={isoDay || undefined}
                   className="
-                    font-serif text-[1.5rem] sm:text-[1.75rem] leading-[1.2]
-                    text-foreground
-                    transition-all duration-200 ease-out
-                    group-hover:-translate-y-1 group-hover:text-terracotta
+                    col-span-12 md:col-span-2
+                    font-mono text-[0.7rem] tracking-[0.18em] uppercase text-foreground-muted
                   "
                 >
-                  <span className="bg-[length:0%_1px] bg-gradient-to-r from-terracotta to-terracotta bg-no-repeat bg-left-bottom transition-[background-size] duration-300 ease-out group-hover:bg-[length:100%_1px]">
-                    {post.title}
-                  </span>
-                </h3>
-                <p className="mt-3 font-sans text-foreground-muted leading-[1.6] max-w-[52ch]">
-                  {post.dek}
-                </p>
-              </div>
+                  {display || "—"}
+                </time>
 
-              <p
-                className="
-                  col-span-12 md:col-span-3 md:text-right
-                  font-mono text-[0.7rem] tracking-[0.18em] uppercase text-foreground-muted
-                "
-              >
-                {post.author}
-              </p>
-            </Link>
-          </li>
-        ))}
+                <div className="col-span-12 md:col-span-7">
+                  <h3
+                    className="
+                      font-serif text-[1.5rem] sm:text-[1.75rem] leading-[1.2]
+                      text-foreground
+                      transition-all duration-200 ease-out
+                      group-hover:-translate-y-1 group-hover:text-terracotta
+                    "
+                  >
+                    <span className="bg-[length:0%_1px] bg-gradient-to-r from-terracotta to-terracotta bg-no-repeat bg-left-bottom transition-[background-size] duration-300 ease-out group-hover:bg-[length:100%_1px]">
+                      {post.title}
+                    </span>
+                  </h3>
+                  <p className="mt-3 font-sans text-foreground-muted leading-[1.6] max-w-[52ch]">
+                    {(post.dek ?? "").trim()}
+                  </p>
+                </div>
+
+                <p
+                  className="
+                    col-span-12 md:col-span-3 md:text-right
+                    font-mono text-[0.7rem] tracking-[0.18em] uppercase text-foreground-muted
+                  "
+                >
+                  —
+                </p>
+              </Link>
+            </li>
+          );
+        })}
         <li className="border-t border-border-subtle" aria-hidden />
       </ol>
     </section>
