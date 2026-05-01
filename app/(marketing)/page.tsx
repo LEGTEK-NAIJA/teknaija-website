@@ -5,11 +5,8 @@ import type { Metadata } from "next";
 import { AdireGround } from "@/components/motifs/AdireGround";
 import { AsoOkeDivider } from "@/components/motifs/AsoOkeDivider";
 import { Ejubejuailo } from "@/components/motifs/Ejubejuailo";
-import {
-  CaseRow,
-  type CaseSector,
-  type CaseVariant,
-} from "@/components/marketing/CaseRow";
+import { CaseRow } from "@/components/marketing/CaseRow";
+import type { CaseSector, CaseVariant } from "@/components/marketing/CaseRow";
 import { HeritageImage } from "@/components/marketing/HeritageImage";
 import {
   TestimonialCarousel,
@@ -74,21 +71,6 @@ async function fetchHomepageData() {
   ]);
 
   // Diagnostic — visible in terminal during `npm run dev` and in Vercel function logs.
-  console.log("[homepage] testimonials →", {
-    count: testimonialsRes.data?.length ?? 0,
-    error: testimonialsRes.error ?? null,
-    sample: testimonialsRes.data?.[0] ?? null,
-  });
-  console.log("[homepage] posts →", {
-    count: postsRes.data?.length ?? 0,
-    error: postsRes.error ?? null,
-    sample: postsRes.data?.[0] ?? null,
-  });
-  console.log("[homepage] projects →", {
-    count: projectsRes.data?.length ?? 0,
-    error: projectsRes.error ?? null,
-    sample: projectsRes.data?.[0] ?? null,
-  });
 
   const testimonials: TestimonialRow[] = testimonialsRes.error
     ? []
@@ -213,9 +195,6 @@ export default async function HomePage() {
   const { testimonials, posts, projects } = await fetchHomepageData();
 
   // TEMP DEBUG — remove once data flow is verified.
-  console.log("PROJECTS:", JSON.stringify(projects));
-  console.log("TESTIMONIALS:", JSON.stringify(testimonials));
-  console.log("POSTS:", JSON.stringify(posts));
 
   return (
     <>
