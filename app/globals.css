@@ -1,26 +1,172 @@
+@import url("https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,100..900;1,9..144,100..900&family=Geist:wght@100..900&family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap");
+
 @import "tailwindcss";
 
+/* -------------------------------------------------------------------------- */
+/* Design tokens — TEK NAIJA (CLAUDE.md §1). Dark default; light = interlude. */
+/* -------------------------------------------------------------------------- */
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  color-scheme: dark;
+
+  /* Colour system */
+  --ink: #0b0e1a;
+  --ink-deep: #060814;
+  --ivory: #f4efe6;
+  --bone: #e8e0d1;
+  --terracotta: #c8553d;
+  --ochre: #d9a441;
+  --indigo: #2a3270;
+  --clay: #8b4a2b;
+  --moss: #4a5d3a;
+
+  /* Semantic surfaces (marketing default = dark) */
+  --background: var(--ink);
+  --foreground: var(--ivory);
+  --foreground-muted: color-mix(in srgb, var(--ivory) 70%, transparent);
+  --surface-raised: var(--indigo);
+  --surface-sunken: var(--ink-deep);
+  --border-subtle: color-mix(in srgb, var(--ochre) 35%, transparent);
+  --border-strong: var(--ochre);
+
+  /* Typography stacks (Google Fonts import above) */
+  --font-sans-stack: "Geist", ui-sans-serif, system-ui, sans-serif;
+  --font-display-stack: "Fraunces", ui-serif, Georgia, Cambria, "Times New Roman",
+    serif;
+  --font-mono-stack: "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo,
+    Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+
+  /* Motion (hero / section orchestration — Motion lib should read these) */
+  --ease-rise: cubic-bezier(0.16, 1, 0.3, 1);
+  --duration-section: 0.9s;
+  --stagger-section: 0.06s;
+  --duration-heartbeat: 600ms;
+
+  /* Editorial measure (insights / about columns) */
+  --measure-prose: 65ch;
+  --measure-subhead: 52ch;
+
+  /* Fraunces optical size axis for dominant display (CLAUDE.md: opsz ~144) */
+  --fraunces-opsz-display: "opsz" 144;
+}
+
+/* Light “interlude” — case studies / relief sections */
+[data-theme="light"],
+.theme-light {
+  color-scheme: light;
+  --background: var(--bone);
+  --foreground: var(--ink);
+  --foreground-muted: color-mix(in srgb, var(--ink) 72%, transparent);
+  --surface-raised: #f0ebe3;
+  --surface-sunken: #ded5c8;
+  --border-subtle: color-mix(in srgb, var(--clay) 28%, transparent);
+  --border-strong: var(--clay);
 }
 
 @theme inline {
+  /* Brand colours → utilities: bg-ink, text-terracotta, ring-ochre, etc. */
+  --color-ink: var(--ink);
+  --color-ink-deep: var(--ink-deep);
+  --color-ivory: var(--ivory);
+  --color-bone: var(--bone);
+  --color-terracotta: var(--terracotta);
+  --color-ochre: var(--ochre);
+  --color-indigo: var(--indigo);
+  --color-clay: var(--clay);
+  --color-moss: var(--moss);
+
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-foreground-muted: var(--foreground-muted);
+  --color-surface-raised: var(--surface-raised);
+  --color-surface-sunken: var(--surface-sunken);
+  --color-border-subtle: var(--border-subtle);
+  --color-border-strong: var(--border-strong);
+
+  /* Typography */
+  --font-sans: var(--font-sans-stack);
+  --font-serif: var(--font-display-stack);
+  --font-mono: var(--font-mono-stack);
+  --font-display: var(--font-display-stack);
+
+  /* Motion — matches CLAUDE.md hero / section choreography */
+  --ease-rise: cubic-bezier(0.16, 1, 0.3, 1);
+
+  /* Mirrors :root prose measures; exposes max-w-* utilities */
+  --max-width-prose: var(--measure-prose);
+  --max-width-subhead: var(--measure-subhead);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+@layer base {
+  html {
+    @apply bg-background text-foreground antialiased;
+    font-family: var(--font-sans);
+    scroll-behavior: smooth;
+    text-rendering: optimizeLegibility;
+  }
+
+  body {
+    @apply min-h-dvh bg-background text-foreground font-sans;
+  }
+
+  ::selection {
+    background-color: color-mix(in srgb, var(--terracotta) 35%, var(--ink));
+    color: var(--ivory);
+  }
+
+  [data-theme="light"] ::selection,
+  .theme-light ::selection {
+    background-color: color-mix(in srgb, var(--terracotta) 28%, var(--bone));
+    color: var(--ink);
+  }
+
+  strong {
+    @apply font-semibold text-foreground;
+  }
+
+  a {
+    @apply text-inherit underline-offset-[0.2em];
+  }
+
+  code,
+  kbd,
+  samp {
+    font-family: var(--font-mono-stack);
+    font-size: 0.95em;
+  }
+
+  /*
+   * Yoruba / Igbo / Hausa accent glyphs as design-only copy (CLAUDE.md):
+   * Fraunces italic, scaled down slightly in running text.
+   */
+  .accent-script {
+    font-family: var(--font-display-stack);
+    font-style: italic;
+    font-size: 0.85em;
+    font-optical-sizing: auto;
+  }
+
+  .font-optical-display {
+    font-optical-sizing: auto;
+    font-variation-settings: var(--fraunces-opsz-display);
+  }
+
+  /*
+   * Default focus — visible ring on indigo-friendly terracotta
+   */
+  :where(:focus-visible) {
+    @apply outline-2 outline-offset-2 outline-terracotta;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  :root {
+    --duration-section: 0.01ms;
+    --duration-heartbeat: 0.01ms;
+    --stagger-section: 0s;
+  }
 }
