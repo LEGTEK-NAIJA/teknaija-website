@@ -3,6 +3,7 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import { AdireGround } from "@/components/motifs/AdireGround";
 import { AsoOkeDivider } from "@/components/motifs/AsoOkeDivider";
+import { Ejubejuailo } from "@/components/motifs/Ejubejuailo";
 import { CaseRow } from "@/components/marketing/CaseRow";
 import {
   TestimonialCarousel,
@@ -62,10 +63,24 @@ function Hero() {
       aria-label="Introduction"
       className="
         relative isolate overflow-hidden
-        min-h-[calc(100dvh-72px)]
+        min-h-[100dvh]
         flex flex-col
+        bg-ink
       "
     >
+      {/*
+        Layer order matters — DOM order = paint order (no explicit z-index on
+        any of these so each child remains in the section's stacking context
+        and its blend mode resolves against the cumulative backdrop):
+          1. Ejubejuailo  — luminosity-blended mask
+          2. Indigo wash  — #0B0E1A at 35% to unify the canvas
+          3. AdireGround  — circles flow over the entire width on top
+      */}
+      <Ejubejuailo />
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 bg-ink/35"
+      />
       <AdireGround />
 
       {/* Editorial grid: headline bleeds 1 column into the gutter */}
@@ -123,9 +138,11 @@ function Hero() {
             "
             style={delayStyle(SUBHEAD_DELAY_MS)}
           >
-            A Lagos-headquartered technology holding company shipping
-            sovereign-grade software for justice, commerce, and the institutions
-            of a continent in motion.
+            Like Adire — every thread placed with intent. Like Achi — every
+            layer built to last. We are a Lagos technology company shipping
+            software infrastructure for justice, commerce, and the
+            institutions a continent is still building. Precise. Permanent.
+            Nigerian.
           </p>
         </div>
       </div>

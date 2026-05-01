@@ -243,6 +243,19 @@
   }
 }
 
+/* -------------------------------------------------------------------------- */
+/* Heritage markers                                                            */
+/* -------------------------------------------------------------------------- */
+
+/* Ejubejuailo (Iyoba pendant photograph) — atmospheric register. Static
+   opacity, luminosity blend so the photograph's chroma collapses into the
+   indigo ground beneath it; the form is preserved, the colour is canvas. */
+
+.ejubejuailo {
+  opacity: 0.55;
+  mix-blend-mode: luminosity;
+}
+
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
