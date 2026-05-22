@@ -1,27 +1,15 @@
 import type { Metadata, Viewport } from "next";
-import { Fraunces, Geist, JetBrains_Mono } from "next/font/google";
+import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 
-const fraunces = Fraunces({
-  variable: "--font-fraunces",
+const geistSans = Geist({
+  variable: "--font-geist-sans",
   subsets: ["latin"],
-  axes: ["opsz", "SOFT", "WONK"],
-  display: "swap",
-  preload: true,
 });
 
-const geist = Geist({
-  variable: "--font-geist",
+const geistMono = Geist_Mono({
+  variable: "--font-geist-mono",
   subsets: ["latin"],
-  display: "swap",
-  preload: true,
-});
-
-const jetbrainsMono = JetBrains_Mono({
-  variable: "--font-jetbrains-mono",
-  subsets: ["latin"],
-  display: "swap",
-  preload: true,
 });
 
 const SITE_URL = "https://teknaija.legtek.ng";
@@ -142,7 +130,7 @@ export default function RootLayout({
   return (
     <html
       lang="en-NG"
-      className={`${fraunces.variable} ${geist.variable} ${jetbrainsMono.variable} h-full antialiased`}
+      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
       data-build={process.env.VERCEL_GIT_COMMIT_SHA?.slice(0, 7) ?? "local"}
     >
       <head>

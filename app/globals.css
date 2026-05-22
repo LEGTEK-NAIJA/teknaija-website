@@ -1,3 +1,4 @@
+@import url("https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,100..900;1,9..144,100..900&family=Geist:wght@100..900&family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap");
 @import "tailwindcss";
 
 /* -------------------------------------------------------------------------- */
@@ -28,11 +29,11 @@
   --border-strong: var(--ochre);
 
   /* Typography stacks (Google Fonts import above) */
-  --font-sans-stack: var(--font-geist), ui-sans-serif, system-ui, sans-serif;
-  --font-display-stack: var(--font-fraunces), ui-serif, Georgia, Cambria,
-    "Times New Roman", serif;
-  --font-mono-stack: var(--font-jetbrains-mono), ui-monospace, "SFMono-Regular",
-    Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  --font-sans-stack: "Geist", ui-sans-serif, system-ui, sans-serif;
+  --font-display-stack: "Fraunces", ui-serif, Georgia, Cambria, "Times New Roman",
+    serif;
+  --font-mono-stack: "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo,
+    Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
 
   /* Motion (hero / section orchestration — Motion lib should read these) */
   --ease-rise: cubic-bezier(0.16, 1, 0.3, 1);
