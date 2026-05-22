@@ -288,18 +288,13 @@ function Hero() {
               -mt-[clamp(2.5rem,6.35vw,5.35rem)] mb-8
               w-full max-w-[min(100%,98vw)] lg:max-w-none
               shrink-0
-              font-serif font-optical-display font-bold
+              font-serif font-optical-display
               text-foreground
               text-[clamp(3.25rem,8.8vw,7.75rem)]
               leading-[0.92] tracking-[-0.035em]
               anim-fade
             "
-            style={{
-              ...delayStyle(0),
-              lineHeight: 0.92,
-              fontWeight: 750,
-              fontVariationSettings: '"opsz" 144, "wght" 750, "SOFT" 30',
-            }}
+            style={{ ...delayStyle(0), lineHeight: 0.92 }}
           >
             <span className="flex min-w-0 flex-nowrap items-baseline gap-x-[0.28em] whitespace-nowrap">
               {HEADLINE_LINE_1.map((word, idx) => {

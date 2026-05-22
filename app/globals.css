@@ -146,8 +146,7 @@
 
   .font-optical-display {
     font-optical-sizing: auto;
-    font-variation-settings: "opsz" 144, "wght" 750, "SOFT" 30;
-    font-weight: 750;
+    font-variation-settings: var(--fraunces-opsz-display);
   }
 
   /*
