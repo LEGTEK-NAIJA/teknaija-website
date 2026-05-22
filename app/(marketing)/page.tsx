@@ -1,7 +1,6 @@
 import type { CSSProperties } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import type { Metadata } from "next";
 import { AdireGround } from "@/components/motifs/AdireGround";
 import { AsoOkeDivider } from "@/components/motifs/AsoOkeDivider";
 import { Ejubejuailo } from "@/components/motifs/Ejubejuailo";
@@ -13,13 +12,6 @@ import {
   type Testimonial,
 } from "@/components/marketing/TestimonialCarousel";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
-
-export const metadata: Metadata = {
-  title:
-    "TEK NAIJA — We build the systems Nigeria runs on.",
-  description:
-    "TEK NAIJA is a Lagos-headquartered technology holding company shipping sovereign-grade software for justice, commerce, and the institutions of a continent in motion.",
-};
 
 /* -------------------------------------------------------------------------- */
 /* Supabase row shapes (minimal — matches CLAUDE.md CMS tables).              */
