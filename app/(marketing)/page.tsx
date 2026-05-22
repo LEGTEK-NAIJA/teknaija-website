@@ -294,7 +294,11 @@ function Hero() {
               leading-[0.92] tracking-[-0.035em]
               anim-fade
             "
-            style={{ ...delayStyle(0), lineHeight: 0.92 }}
+            style={{
+              ...delayStyle(0),
+              lineHeight: 0.92,
+              fontWeight: 600,
+            }}
           >
             <span className="flex min-w-0 flex-nowrap items-baseline gap-x-[0.28em] whitespace-nowrap">
               {HEADLINE_LINE_1.map((word, idx) => {
