@@ -321,6 +321,16 @@
   }
 }
 
+@media (prefers-reduced-data: reduce) {
+  .anim-slow-pan,
+  .anim-aso-drift,
+  .text-shimmer {
+    animation: none !important;
+    transform: none !important;
+    background-position: 0 50% !important;
+  }
+}
+
 /* -------------------------------------------------------------------------- */
 /* Heritage markers                                                            */
 /* -------------------------------------------------------------------------- */
