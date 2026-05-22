@@ -10,6 +10,7 @@ const NAV_ITEMS = [
 ] as const;
 
 const LEGAL_ITEMS = [
+  { href: "/status", label: "Status" },
   { href: "/privacy", label: "Privacy" },
   { href: "/terms", label: "Terms" },
 ] as const;
