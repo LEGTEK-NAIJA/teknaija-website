@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { NsibidiGlyph } from "@/components/motifs/NsibidiGlyph";
 import { StackRibbon } from "@/components/marketing/StackRibbon";
 
 export type CaseSector =
@@ -69,12 +70,15 @@ export function CaseRow({
           {projectLabel}
         </p>
 
-        <h3 className="font-serif font-optical-display leading-[0.95]">
-          <span className="block text-[clamp(2.4rem,5vw,4rem)] text-foreground">
+        <h3
+          className="font-serif font-optical-display leading-[0.9]"
+          style={{ fontWeight: 500 }}
+        >
+          <span className="block text-[clamp(2.75rem,5.8vw,4.75rem)] tracking-[-0.028em] text-foreground">
             {title}
           </span>
           {scriptSubtitle && (
-            <span className="accent-script mt-3 block text-foreground-muted text-[1.25rem]">
+            <span className="accent-script mt-3 block text-foreground-muted text-[clamp(1.25rem,1.8vw,1.6rem)]">
               {scriptSubtitle}
             </span>
           )}
@@ -171,7 +175,7 @@ function CaseImage({
   return (
     <figure
       className="
-        relative aspect-[4/3] w-full overflow-hidden
+        group relative aspect-[4/3] w-full overflow-hidden
         border border-ochre/60
         bg-ink-deep
       "
@@ -189,6 +193,18 @@ function CaseImage({
         ) : (
           <ForthcomingArt />
         )}
+      </div>
+
+      {/* Top-right Nsibidi corner mark — traces in on hover */}
+      <div
+        aria-hidden="true"
+        className="
+          absolute top-4 right-4 z-10
+          text-ochre/70 opacity-0 transition-opacity duration-700
+          group-hover:opacity-100
+        "
+      >
+        <NsibidiGlyph variant="knot" size={48} trigger="hover" />
       </div>
 
       {/* Bottom-left mono caption — the "infrastructure tell" on each frame */}

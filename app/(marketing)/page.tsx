@@ -4,6 +4,7 @@ import Link from "next/link";
 import { AdireGround } from "@/components/motifs/AdireGround";
 import { AsoOkeDivider } from "@/components/motifs/AsoOkeDivider";
 import { Ejubejuailo } from "@/components/motifs/Ejubejuailo";
+import { NsibidiGlyph } from "@/components/motifs/NsibidiGlyph";
 import { CaseRow } from "@/components/marketing/CaseRow";
 import type { CaseSector, CaseVariant } from "@/components/marketing/CaseRow";
 import { HeritageImage } from "@/components/marketing/HeritageImage";
@@ -200,6 +201,8 @@ export default async function HomePage() {
       <AsoOkeDivider className="mx-auto max-w-[1440px] px-5 sm:px-8 lg:px-14" />
       <SelectedWork projects={projects} />
       <AsoOkeDivider className="mx-auto max-w-[1440px] px-5 sm:px-8 lg:px-14" />
+      <ByTheNumbers />
+      <AsoOkeDivider className="mx-auto max-w-[1440px] px-5 sm:px-8 lg:px-14" />
       <CapabilitiesPreview />
       <AsoOkeDivider className="mx-auto max-w-[1440px] px-5 sm:px-8 lg:px-14" />
       <Voices testimonials={testimonials} />
@@ -224,18 +227,17 @@ function Hero() {
         bg-ink
       "
     >
-      {/*
-        Atmospheric stack (paint order): Ejubejuailo (screen) → wash → Adire →
-        right-edge radial wash → foreground column.
-      */}
-      <Ejubejuailo />
+      {/* Background stack — slow-panning Ejube + Adire + indigo wash */}
+      <div className="absolute inset-0 anim-slow-pan">
+        <Ejubejuailo />
+      </div>
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute inset-0 bg-ink/35"
+        className="pointer-events-none absolute inset-0 bg-ink/40"
       />
       <AdireGround />
 
-      {/* Indigo radial over right half — softens photograph studio edge into page */}
+      {/* Indigo radial vignette over right half */}
       <div
         aria-hidden="true"
         className="
@@ -243,11 +245,27 @@ function Hero() {
         "
         style={{
           background:
-            "radial-gradient(ellipse at right center, transparent 30%, #0B0E1A 75%)",
+            "radial-gradient(ellipse at right center, transparent 28%, #0B0E1A 78%)",
         }}
       />
 
-      {/* Content column — pull up into viewport; keep copy left & narrow vs Ejube */}
+      {/* Top-right Nsibidi compass — drawn in as a heritage tell */}
+      <div
+        aria-hidden="true"
+        className="absolute right-8 top-32 z-[11] hidden md:block text-ochre/55"
+      >
+        <NsibidiGlyph variant="compass" size={96} delay={1400} />
+      </div>
+
+      {/* Bottom-left Nsibidi lattice — second tell */}
+      <div
+        aria-hidden="true"
+        className="absolute left-8 bottom-32 z-[11] hidden lg:block text-terracotta/50"
+      >
+        <NsibidiGlyph variant="lattice" size={84} delay={1800} />
+      </div>
+
+      {/* Content column */}
       <div
         className="
           relative z-10 mx-auto w-full max-w-[1440px]
@@ -282,23 +300,35 @@ function Hero() {
             />
           </Link>
 
+          {/* Eyebrow — a small editorial marker above the headline */}
+          <p
+            className="
+              relative z-[15]
+              -mt-6 mb-4
+              shrink-0
+              font-mono text-[0.7rem] sm:text-[0.78rem] tracking-[0.32em] uppercase
+              text-ochre
+              anim-fade
+            "
+            style={delayStyle(200)}
+          >
+            <span className="inline-block w-8 h-px align-middle bg-ochre mr-3" />
+            Issue 01 · The Founding Brief
+          </p>
+
           <h1
             className="
               relative z-[15]
-              -mt-[clamp(2.5rem,6.35vw,5.35rem)] mb-8
+              mb-8
               w-full max-w-[min(100%,98vw)] lg:max-w-none
               shrink-0
               font-serif font-optical-display
               text-foreground
               text-[clamp(3.25rem,8.8vw,7.75rem)]
-              leading-[0.92] tracking-[-0.035em]
+              leading-[0.9] tracking-[-0.038em]
               anim-fade
             "
-            style={{
-              ...delayStyle(0),
-              lineHeight: 0.92,
-              fontWeight: 600,
-            }}
+            style={{ ...delayStyle(0), lineHeight: 0.9, fontWeight: 500 }}
           >
             <span className="flex min-w-0 flex-nowrap items-baseline gap-x-[0.28em] whitespace-nowrap">
               {HEADLINE_LINE_1.map((word, idx) => {
@@ -310,7 +340,7 @@ function Hero() {
                 );
               })}
             </span>
-            <span className="mt-[0.08em] flex min-w-0 flex-nowrap items-baseline gap-x-[0.28em] whitespace-nowrap">
+            <span className="mt-[0.06em] flex min-w-0 flex-nowrap items-baseline gap-x-[0.28em] whitespace-nowrap">
               {HEADLINE_LINE_2.map((word, idx) => {
                 const i = HEADLINE_LINE_1.length + idx;
                 const isAccent = word === "Nigeria";
@@ -329,6 +359,22 @@ function Hero() {
             </span>
           </h1>
 
+          {/* Yoruba accent — a single italic line that pulls the cultural register */}
+          <p
+            className="
+              relative z-[15]
+              mb-6 shrink-0
+              accent-script text-foreground-muted
+              text-[clamp(1.1rem,2vw,1.5rem)]
+              anim-veil-rise
+            "
+            style={delayStyle(SUBHEAD_DELAY_MS - 100)}
+          >
+            Ìmọ̀-ẹ̀rọ tí ó dúró ní ìpìlẹ̀.
+            <span className="text-foreground/45"> · </span>
+            Technology that holds the foundation.
+          </p>
+
           <p
             className="
               relative z-[15]
@@ -346,6 +392,7 @@ function Hero() {
 
           <div className="min-h-4 flex-1 shrink-0" aria-hidden />
 
+          {/* Footnote — split into editorial chips with subtle dividers */}
           <p
             className="
               relative z-[15]
@@ -432,22 +479,29 @@ function SelectedWork({ projects }: { projects: ProjectRow[] }) {
         pt-24 lg:pt-40
       "
     >
-      <header className="grid grid-cols-12 gap-x-6 mb-16 lg:mb-24">
-        <p className="col-span-12 lg:col-span-3 font-mono text-[0.7rem] tracking-[0.22em] uppercase text-ochre">
-          Selected work
-        </p>
+      <header className="grid grid-cols-12 gap-x-6 mb-20 lg:mb-32">
+        <div className="col-span-12 lg:col-span-3 flex flex-col gap-4">
+          <p className="font-mono text-[0.7rem] tracking-[0.32em] uppercase text-ochre flex items-center gap-3">
+            <span aria-hidden className="inline-block w-8 h-px bg-ochre" />
+            § 002
+          </p>
+          <p className="font-mono text-[0.7rem] tracking-[0.22em] uppercase text-foreground-muted">
+            Selected work
+          </p>
+        </div>
         <div className="col-span-12 lg:col-span-9 mt-4 lg:mt-0">
           <h2
             id="work-heading"
             className="
-              font-serif font-optical-display leading-[1.02]
-              text-[clamp(2rem,4.4vw,3.5rem)] tracking-[-0.01em]
-              text-foreground max-w-[20ch]
+              font-serif font-optical-display leading-[0.92]
+              text-[clamp(2.75rem,7vw,6rem)] tracking-[-0.028em]
+              text-foreground max-w-[22ch]
             "
+            style={{ fontWeight: 500 }}
           >
-            The proof is what we ship.
+            The proof <span className="italic text-foreground-muted">is what</span> we ship.
           </h2>
-          <p className="mt-6 max-w-[52ch] font-sans text-foreground-muted leading-[1.65]">
+          <p className="mt-8 max-w-[52ch] font-sans text-[1.05rem] text-foreground-muted leading-[1.65]">
             Three engagements that describe the bar of the practice — one in
             production, one in trade, one in build. The portfolio is small on
             purpose; the work is not.
@@ -457,7 +511,12 @@ function SelectedWork({ projects }: { projects: ProjectRow[] }) {
 
       <div className="flex flex-col gap-24 lg:gap-40">
         {rows.map((project, idx) => {
-          const subtitle = undefined;
+          const subtitleMap: Record<string, string> = {
+            "legtek-naija": "Ìdájọ́ — Justice as system",
+            "stk-industries": "Ìṣòwò — Trade as infrastructure",
+            litigateiq: "NLIS — Intelligence over precedent",
+          };
+          const subtitle = subtitleMap[project.slug ?? ""];
           return (
             <CaseRow
               key={project.slug}
@@ -475,6 +534,122 @@ function SelectedWork({ projects }: { projects: ProjectRow[] }) {
             />
           );
         })}
+      </div>
+    </section>
+  );
+}
+
+/* -------------------------------------------------------------------------- */
+/* Section 2b — By the numbers                                                 */
+/* -------------------------------------------------------------------------- */
+
+function ByTheNumbers() {
+  const stats = [
+    {
+      value: "19",
+      label: "Procedural parts",
+      detail: "shipped in LEGTEK NAIJA's rule engine",
+      delay: 0,
+    },
+    {
+      value: "102",
+      label: "Articles",
+      detail: "encoded in the dispute resolution corpus",
+      delay: 120,
+    },
+    {
+      value: "100%",
+      label: "PSC ownership",
+      detail: "founder-aligned, no external dilution",
+      delay: 240,
+    },
+    {
+      value: "4",
+      label: "Active sectors",
+      detail: "justice · commerce · institutional · AI",
+      delay: 360,
+    },
+  ];
+
+  return (
+    <section
+      aria-labelledby="numbers-heading"
+      className="
+        relative isolate overflow-hidden
+        bg-ink-deep
+        py-24 lg:py-40
+      "
+    >
+      {/* Faint Adire-style radial pattern, contained to this section */}
+      <svg
+        aria-hidden="true"
+        className="absolute inset-0 h-full w-full opacity-[0.035] mix-blend-screen pointer-events-none"
+        preserveAspectRatio="xMidYMid slice"
+        viewBox="0 0 1200 600"
+      >
+        {Array.from({ length: 10 }).map((_, idx) => (
+          <circle
+            key={idx}
+            cx="600"
+            cy="300"
+            r={40 + idx * 55}
+            fill="none"
+            stroke="#F4EFE6"
+            strokeWidth="0.8"
+            strokeDasharray={idx % 2 ? "6 14" : "20 6"}
+          />
+        ))}
+      </svg>
+
+      <div className="relative mx-auto w-full max-w-[1440px] px-5 sm:px-8 lg:px-14">
+        <header className="grid grid-cols-12 gap-x-6 mb-16 lg:mb-24">
+          <p className="col-span-12 lg:col-span-3 font-mono text-[0.7rem] tracking-[0.22em] uppercase text-ochre">
+            By the numbers
+          </p>
+          <div className="col-span-12 lg:col-span-9 mt-4 lg:mt-0">
+            <h2
+              id="numbers-heading"
+              className="
+                font-serif font-optical-display leading-[0.98]
+                text-[clamp(2.25rem,5.2vw,4.5rem)] tracking-[-0.022em]
+                text-foreground max-w-[22ch]
+              "
+            >
+              The receipts of a young
+              <span className="block italic text-foreground-muted">institution.</span>
+            </h2>
+          </div>
+        </header>
+
+        <dl className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-y-14 gap-x-10">
+          {stats.map((s) => (
+            <div key={s.label} className="flex flex-col gap-3 group">
+              <dt
+                className="
+                  font-serif font-optical-display
+                  text-[clamp(4rem,9vw,8rem)] leading-[0.85]
+                  text-foreground
+                  anim-counter
+                "
+                style={{
+                  ["--anim-delay" as string]: `${s.delay}ms`,
+                  fontWeight: 400,
+                  fontVariationSettings: '"opsz" 144',
+                } as CSSProperties}
+              >
+                {s.value}
+              </dt>
+              <dd className="flex flex-col gap-1 border-t border-ochre/30 pt-4">
+                <span className="font-mono text-[0.7rem] tracking-[0.22em] uppercase text-ochre">
+                  {s.label}
+                </span>
+                <span className="font-sans text-sm leading-[1.5] text-foreground-muted">
+                  {s.detail}
+                </span>
+              </dd>
+            </div>
+          ))}
+        </dl>
       </div>
     </section>
   );
@@ -528,17 +703,19 @@ function CapabilitiesPreview() {
     >
       <div className="grid grid-cols-12 gap-x-6 gap-y-16">
         <div className="col-span-12 lg:col-span-5">
-          <p className="font-mono text-[0.7rem] tracking-[0.22em] uppercase text-ochre mb-6">
-            What we build
+          <p className="font-mono text-[0.7rem] tracking-[0.32em] uppercase text-ochre mb-6 flex items-center gap-3">
+            <span aria-hidden className="inline-block w-8 h-px bg-ochre" />
+            § 003 — Practice
           </p>
           <h2
             id="capabilities-heading"
             className="
               font-serif font-optical-display
-              text-[clamp(2.25rem,4.6vw,4rem)]
-              leading-[1.02] tracking-[-0.012em]
+              text-[clamp(2.75rem,6vw,5.25rem)]
+              leading-[0.95] tracking-[-0.028em]
               text-foreground max-w-[14ch]
             "
+            style={{ fontWeight: 500 }}
           >
             Four practices.{" "}
             <span className="block italic text-foreground-muted">
@@ -546,7 +723,7 @@ function CapabilitiesPreview() {
             </span>
           </h2>
 
-          <p className="mt-8 max-w-[40ch] font-sans text-foreground-muted leading-[1.65]">
+          <p className="mt-10 max-w-[40ch] font-sans text-[1.05rem] text-foreground-muted leading-[1.65]">
             We are organised as four practices because the work asks us to be —
             not because four sounds tidy on a slide. Each is run as if it were
             the firm.
@@ -571,9 +748,10 @@ function CapabilitiesPreview() {
                   className="
                     col-span-2 sm:col-span-1
                     font-serif italic text-ochre
-                    text-[1.5rem] sm:text-[1.75rem] leading-none
+                    text-[clamp(2.5rem,3.5vw,3.25rem)] leading-none
                     pt-1
                   "
+                  style={{ fontWeight: 400 }}
                 >
                   {p.roman}.
                 </span>
@@ -581,9 +759,9 @@ function CapabilitiesPreview() {
                   <h3
                     className="
                       col-span-12 md:col-span-5
-                      font-serif text-[1.4rem] sm:text-[1.55rem]
-                      leading-[1.2] text-foreground
-                      transition-colors group-hover:text-terracotta
+                      font-serif text-[clamp(1.55rem,2.2vw,2rem)]
+                      leading-[1.15] tracking-[-0.012em] text-foreground
+                      transition-colors duration-500 group-hover:text-terracotta
                     "
                   >
                     {p.title}
@@ -688,12 +866,13 @@ function FromTheDesk({ posts }: { posts: PostRow[] }) {
             <h2
               id="desk-heading"
               className="
-                font-serif font-optical-display leading-[1.02]
-                text-[clamp(2rem,4.4vw,3.5rem)] tracking-[-0.01em]
+                font-serif font-optical-display leading-[0.95]
+                text-[clamp(2.5rem,6vw,5rem)] tracking-[-0.028em]
                 text-foreground max-w-[20ch]
               "
+              style={{ fontWeight: 500 }}
             >
-              Notes from the practice.
+              Notes <span className="italic text-foreground-muted">from the</span> practice.
             </h2>
             <Link
               href="/insights"

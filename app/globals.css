@@ -202,6 +202,31 @@
   }
 }
 
+@keyframes tn-slow-pan {
+  from { transform: scale(1.08) translateY(-2%); }
+  to   { transform: scale(1.14) translateY(2%); }
+}
+
+@keyframes tn-shimmer {
+  0%   { background-position: -200% 50%; }
+  100% { background-position: 200% 50%; }
+}
+
+@keyframes tn-veil-rise {
+  from { transform: translateY(8%); opacity: 0; }
+  to   { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes tn-counter-tick {
+  0%   { transform: translateY(0.6em); opacity: 0; filter: blur(2px); }
+  100% { transform: translateY(0); opacity: 1; filter: blur(0); }
+}
+
+@keyframes tn-glyph-trace {
+  from { stroke-dashoffset: 600; }
+  to   { stroke-dashoffset: 0; }
+}
+
 @layer utilities {
   .anim-rise {
     opacity: 0;
@@ -227,6 +252,49 @@
   .anim-aso-drift {
     animation: tn-aso-oke-drift 24s linear infinite;
   }
+
+  .anim-slow-pan {
+    animation: tn-slow-pan 22s ease-in-out infinite alternate;
+  }
+
+  .anim-veil-rise {
+    opacity: 0;
+    transform: translateY(8%);
+    animation: tn-veil-rise 1.2s var(--ease-rise) forwards;
+    animation-delay: var(--anim-delay, 0ms);
+  }
+
+  .anim-counter {
+    opacity: 0;
+    transform: translateY(0.6em);
+    filter: blur(2px);
+    animation: tn-counter-tick 1s var(--ease-rise) forwards;
+    animation-delay: var(--anim-delay, 0ms);
+  }
+
+  .anim-glyph-trace path,
+  .anim-glyph-trace line {
+    stroke-dasharray: 600;
+    stroke-dashoffset: 600;
+    animation: tn-glyph-trace 2.4s var(--ease-rise) forwards;
+    animation-delay: var(--anim-delay, 0ms);
+  }
+
+  .text-shimmer {
+    background: linear-gradient(
+      90deg,
+      var(--ivory) 0%,
+      var(--ochre) 35%,
+      var(--ivory) 60%,
+      var(--ivory) 100%
+    );
+    background-size: 200% 100%;
+    background-position: -200% 50%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    animation: tn-shimmer 6s linear infinite;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -239,6 +307,17 @@
   }
   .anim-aso-drift {
     animation: none !important;
+  }
+
+  .anim-slow-pan,
+  .anim-veil-rise,
+  .anim-counter,
+  .anim-glyph-trace path,
+  .anim-glyph-trace line,
+  .text-shimmer {
+    animation: none !important;
+    transform: none !important;
+    opacity: 1 !important;
   }
 }
 
