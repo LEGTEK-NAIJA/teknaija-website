@@ -141,7 +141,7 @@ function Wordmark() {
         width={480}
         height={44}
         className="
-          h-[44px] w-auto object-contain
+          h-[36px] sm:h-[44px] w-auto object-contain
           shrink-0 mix-blend-screen
           transition-opacity group-hover:opacity-95
         "
@@ -151,7 +151,7 @@ function Wordmark() {
       <span
         aria-label="Registration number"
         className="
-          font-mono text-foreground-muted
+          hidden xs:inline font-mono text-foreground-muted
           text-[0.7em] tracking-[0.12em] uppercase leading-none
         "
       >

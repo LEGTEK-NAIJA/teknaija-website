@@ -324,13 +324,13 @@ function Hero() {
               shrink-0
               font-serif font-optical-display
               text-foreground
-              text-[clamp(3.25rem,8.8vw,7.75rem)]
+              text-[clamp(2.5rem,8.8vw,7.75rem)]
               leading-[0.9] tracking-[-0.038em]
               anim-fade
             "
             style={{ ...delayStyle(0), lineHeight: 0.9, fontWeight: 500 }}
           >
-            <span className="flex min-w-0 flex-nowrap items-baseline gap-x-[0.28em] whitespace-nowrap">
+            <span className="flex min-w-0 flex-wrap items-baseline gap-x-[0.2em] lg:flex-nowrap lg:gap-x-[0.28em] lg:whitespace-nowrap">
               {HEADLINE_LINE_1.map((word, idx) => {
                 const delayMs = idx * STAGGER_MS;
                 return (
@@ -340,7 +340,7 @@ function Hero() {
                 );
               })}
             </span>
-            <span className="mt-[0.06em] flex min-w-0 flex-nowrap items-baseline gap-x-[0.28em] whitespace-nowrap">
+            <span className="mt-[0.06em] flex min-w-0 flex-wrap items-baseline gap-x-[0.2em] lg:flex-nowrap lg:gap-x-[0.28em] lg:whitespace-nowrap">
               {HEADLINE_LINE_2.map((word, idx) => {
                 const i = HEADLINE_LINE_1.length + idx;
                 const isAccent = word === "Nigeria";

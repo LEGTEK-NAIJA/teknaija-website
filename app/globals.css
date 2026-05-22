@@ -63,6 +63,8 @@
 }
 
 @theme inline {
+  --breakpoint-xs: 28rem;
+
   /* Brand colours → utilities: bg-ink, text-terracotta, ring-ochre, etc. */
   --color-ink: var(--ink);
   --color-ink-deep: var(--ink-deep);
