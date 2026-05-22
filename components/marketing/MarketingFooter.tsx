@@ -114,10 +114,6 @@ function IdentityColumn() {
         <br />
         Federal Republic of Nigeria
       </address>
-
-      <p className="accent-script text-foreground-muted">
-        An Ejeh Family enterprise.
-      </p>
     </div>
   );
 }

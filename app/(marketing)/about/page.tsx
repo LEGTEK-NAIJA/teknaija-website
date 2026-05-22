@@ -326,7 +326,6 @@ function Record() {
     { label: "Registered name", value: "TEK NAIJA LIMITED" },
     { label: "RC number", value: "9181824" },
     { label: "Date of incorporation", value: "8 January 2026" },
-    { label: "Issued share capital", value: "₦100,000" },
     { label: "Principal activity", value: "Software Development and Solutions" },
     { label: "Registered office", value: "5 Bauchi Link Street, Apapa, Lagos" },
     { label: "Jurisdiction", value: "Federal Republic of Nigeria" },
