@@ -46,6 +46,7 @@ type ProjectRow = {
   status: string | null;
   body: string | null;
   outcomes?: unknown;
+  stack?: unknown;
 };
 
 async function fetchHomepageData() {
@@ -65,7 +66,7 @@ async function fetchHomepageData() {
       .limit(3),
     supabase
       .from("projects")
-      .select("slug, title, sector, status, body, outcomes")
+      .select("slug, title, sector, status, body, outcomes, stack")
       .eq("featured", true)
       .order("display_order", { ascending: true }),
   ]);
@@ -132,6 +133,11 @@ function toCaseDisplayStatus(
   if (s === "forthcoming") return "Forthcoming";
   if (s === "archived") return "Active";
   return "Live";
+}
+
+function stackToList(stack: unknown): string[] {
+  if (!Array.isArray(stack)) return [];
+  return stack.filter((x): x is string => typeof x === "string");
 }
 
 function outcomesToMeta(
@@ -337,11 +343,9 @@ function Hero() {
             "
             style={delayStyle(SUBHEAD_DELAY_MS)}
           >
-            Like Adire — every thread placed with intent. Like Achi — every
-            layer built to last. We are a Lagos technology company shipping
-            software infrastructure for justice, commerce, and the
-            institutions a continent is still building. Precise. Permanent.
-            Nigerian.
+            A Lagos-headquartered technology holding company shipping
+            sovereign-grade software for justice, commerce, and the
+            institutions of a continent in motion.
           </p>
 
           <div className="min-h-4 flex-1 shrink-0" aria-hidden />
@@ -470,6 +474,7 @@ function SelectedWork({ projects }: { projects: ProjectRow[] }) {
               variant={toCaseVariant(project.slug, project.status)}
               reverse={idx % 2 === 1}
               body={(project.body ?? "").trim()}
+              stack={stackToList(project.stack)}
               meta={outcomesToMeta(project.outcomes)}
             />
           );

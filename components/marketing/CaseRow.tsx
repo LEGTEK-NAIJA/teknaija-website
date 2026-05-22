@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { StackRibbon } from "@/components/marketing/StackRibbon";
 
 export type CaseSector =
   | "JUSTICE INFRASTRUCTURE"
@@ -19,6 +20,7 @@ export type CaseRowProps = {
   variant: CaseVariant;
   reverse?: boolean;
   meta?: { label: string; value: string }[];
+  stack?: string[];
 };
 
 /**
@@ -37,6 +39,7 @@ export function CaseRow({
   variant,
   reverse = false,
   meta,
+  stack,
 }: CaseRowProps) {
   const projectLabel = `PROJECT ${String(index).padStart(2, "0")} — ${sector}`;
 
@@ -80,6 +83,8 @@ export function CaseRow({
         <p className="font-sans text-[1.02rem] leading-[1.65] text-foreground-muted max-w-[44ch]">
           {body}
         </p>
+
+        <StackRibbon items={stack ?? []} />
 
         {meta && meta.length > 0 && (
           <dl className="grid grid-cols-2 gap-x-6 gap-y-3 border-t border-border-subtle pt-5">
