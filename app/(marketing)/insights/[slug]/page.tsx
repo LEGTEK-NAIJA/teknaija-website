@@ -30,6 +30,18 @@ export async function generateMetadata({
   return {
     title: `${post.title} — TEK NAIJA`,
     description: post.dek?.trim() || undefined,
+    openGraph: {
+      title: post.title ?? undefined,
+      description: post.dek ?? undefined,
+      images: [
+        {
+          url: `https://teknaija.legtek.ng/api/og?title=${encodeURIComponent(post.title ?? "TEK NAIJA")}&eyebrow=${encodeURIComponent("INSIGHTS · TEK NAIJA")}&subtitle=${encodeURIComponent(post.dek ?? "")}`,
+          width: 1200,
+          height: 630,
+          alt: post.title ?? "TEK NAIJA insight",
+        },
+      ],
+    },
   };
 }
 

@@ -28,13 +28,27 @@ export async function generateMetadata({
   if (!project?.title) {
     return { title: "Case study — TEK NAIJA" };
   }
+  const description =
+    (project.body ?? "")
+      .replace(/\s+/g, " ")
+      .trim()
+      .slice(0, 160) || undefined;
+
   return {
     title: `${project.title} — TEK NAIJA`,
-    description:
-      (project.body ?? "")
-        .replace(/\s+/g, " ")
-        .trim()
-        .slice(0, 160) || undefined,
+    description,
+    openGraph: {
+      title: project.title ?? undefined,
+      description,
+      images: [
+        {
+          url: `https://teknaija.legtek.ng/api/og?title=${encodeURIComponent(project.title ?? "TEK NAIJA")}&eyebrow=${encodeURIComponent("WORK · TEK NAIJA")}&subtitle=${encodeURIComponent(description ?? "")}`,
+          width: 1200,
+          height: 630,
+          alt: project.title ?? "TEK NAIJA case study",
+        },
+      ],
+    },
   };
 }
 

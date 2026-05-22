@@ -49,12 +49,21 @@ export const metadata: Metadata = {
     title: "TEK NAIJA — We build the systems Nigeria runs on.",
     description:
       "A Lagos-headquartered technology holding company shipping sovereign-grade software for justice, commerce, and institutional infrastructure.",
+    images: [
+      {
+        url: `${SITE_URL}/api/og`,
+        width: 1200,
+        height: 630,
+        alt: "TEK NAIJA — We build the systems Nigeria runs on.",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
     title: "TEK NAIJA — We build the systems Nigeria runs on.",
     description:
       "Lagos-headquartered technology holding company. Sovereign-grade software for justice, commerce, and institutions.",
+    images: [`${SITE_URL}/api/og`],
   },
   robots: {
     index: true,

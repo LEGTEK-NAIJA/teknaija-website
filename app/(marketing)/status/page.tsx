@@ -7,6 +7,16 @@ import { UptimeLegend } from "@/components/marketing/UptimeLegend";
 export const metadata: Metadata = {
   title: "Status",
   description: "Live operational status of the systems TEK NAIJA builds and runs. Updated every five minutes.",
+  openGraph: {
+    images: [
+      {
+        url: `https://teknaija.legtek.ng/api/og?title=${encodeURIComponent("Live infrastructure status.")}&eyebrow=${encodeURIComponent("STATUS")}&subtitle=${encodeURIComponent("Real-time visibility into every TEK NAIJA system in production.")}`,
+        width: 1200,
+        height: 630,
+        alt: "TEK NAIJA — Live infrastructure status",
+      },
+    ],
+  },
 };
 
 export const revalidate = 60;
