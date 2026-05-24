@@ -25,10 +25,10 @@ export async function generateMetadata({
   const { slug } = await params;
   const post = await fetchPostBySlug(slug);
   if (!post?.title) {
-    return { title: "Insight — TEK NAIJA" };
+    return { title: { absolute: "Insight — TEK NAIJA" } };
   }
   return {
-    title: `${post.title} — TEK NAIJA`,
+    title: { absolute: `${post.title} — TEK NAIJA` },
     description: post.dek?.trim() || undefined,
     openGraph: {
       title: post.title ?? undefined,

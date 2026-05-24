@@ -26,7 +26,7 @@ export async function generateMetadata({
   const { slug } = await params;
   const project = await fetchProjectBySlug(slug);
   if (!project?.title) {
-    return { title: "Case study — TEK NAIJA" };
+    return { title: { absolute: "Case study — TEK NAIJA" } };
   }
   const description =
     (project.body ?? "")
@@ -35,7 +35,7 @@ export async function generateMetadata({
       .slice(0, 160) || undefined;
 
   return {
-    title: `${project.title} — TEK NAIJA`,
+    title: { absolute: `${project.title} — TEK NAIJA` },
     description,
     openGraph: {
       title: project.title ?? undefined,
