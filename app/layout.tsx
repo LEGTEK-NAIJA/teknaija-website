@@ -103,7 +103,7 @@ const organizationLd = {
   foundingDate: "2026-01-08",
   identifier: "RC 9181824",
   description:
-    "Nigerian technology holding company shipping software infrastructure for justice, commerce, and institutional workflows.",
+    "Nigerian technology firm. Holds a portfolio of owned software (LEGTEK NAIJA, LITIGATEIQ) and builds software for Nigerian institutions — courts, exporters, chambers, and trading houses.",
   address: {
     "@type": "PostalAddress",
     streetAddress: "5 Bauchi Link Street",

@@ -8,7 +8,7 @@ import type { TeamMemberRow } from "@/lib/content/types";
 export const metadata: Metadata = {
   title: "About — TEK NAIJA",
   description:
-    "TEK NAIJA: a Lagos-headquartered technology holding company. Why we exist, who runs it, and the registration record set down honestly.",
+    "TEK NAIJA LTD (RC 9181824) — a Lagos-headquartered technology firm. We hold a portfolio of owned software (LEGTEK NAIJA, LITIGATEIQ) and build software for the Nigerian institutions that need it built — courts, exporters, chambers.",
 };
 
 const FOUNDING_LEADERSHIP_FALLBACK: TeamMemberRow[] = [
