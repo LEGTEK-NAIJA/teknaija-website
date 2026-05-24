@@ -77,6 +77,9 @@ export const metadata: Metadata = {
   },
   alternates: { canonical: SITE_URL },
   category: "technology",
+  verification: {
+    google: "YUrYtCYe5SsTIi7ASgb65zjC9aYteuluKlw6uYhFC50",
+  },
 };
 
 export const viewport: Viewport = {
