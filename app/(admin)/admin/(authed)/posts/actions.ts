@@ -32,6 +32,11 @@ function toPublishedAtIso(input: string | undefined | null) {
   return Number.isNaN(d.getTime()) ? null : d.toISOString();
 }
 
+function toCoverImageUrl(input: string | undefined | null) {
+  const trimmed = (input ?? "").trim();
+  return trimmed.length > 0 ? trimmed : null;
+}
+
 export async function createPostAction(
   values: PostFormValues
 ): Promise<ActionResult> {
@@ -54,6 +59,7 @@ export async function createPostAction(
     author_name: parsed.data.author_name || null,
     status: parsed.data.status,
     published_at: toPublishedAtIso(parsed.data.published_at),
+    cover_image: toCoverImageUrl(parsed.data.cover_image),
   });
 
   if (error) {
@@ -90,6 +96,7 @@ export async function updatePostAction(
       author_name: parsed.data.author_name || null,
       status: parsed.data.status,
       published_at: toPublishedAtIso(parsed.data.published_at),
+      cover_image: toCoverImageUrl(parsed.data.cover_image),
     })
     .eq("id", id);
 

@@ -66,6 +66,17 @@ export function MarkdownField({
       >
         <MarkdownPreview source={current} />
       </div>
+      <div className="col-span-1 flex justify-end pt-1 text-xs font-mono text-slate-500 lg:col-span-2">
+        {(() => {
+          const words = (current || "").trim().split(/\s+/).filter(Boolean).length;
+          const minutes = Math.max(1, Math.round(words / 220));
+          return (
+            <span>
+              {words.toLocaleString()} words · about {minutes} min read
+            </span>
+          );
+        })()}
+      </div>
     </div>
   );
 }

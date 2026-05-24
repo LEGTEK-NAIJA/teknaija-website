@@ -19,6 +19,12 @@ const PostBaseSchema = z.object({
   status: z.enum(PostStatuses),
   /** ISO date string (YYYY-MM-DD) or "" while in draft. */
   published_at: z.string().trim(),
+  cover_image: z
+    .string()
+    .url({ message: "Cover image must be a valid URL." })
+    .or(z.literal(""))
+    .optional()
+    .nullable(),
 });
 
 export const PostFormSchema = PostBaseSchema.refine(
@@ -41,4 +47,5 @@ export const POST_DEFAULTS: PostFormValues = {
   author_name: "",
   status: "draft",
   published_at: "",
+  cover_image: "",
 };

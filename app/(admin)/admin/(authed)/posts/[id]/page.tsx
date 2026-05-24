@@ -40,7 +40,7 @@ export default async function EditPostPage({
   const { data, error } = await supabase
     .from("posts")
     .select(
-      "id, slug, title, dek, body, author_name, status, published_at"
+      "id, slug, title, dek, body, author_name, status, published_at, cover_image"
     )
     .eq("id", id)
     .maybeSingle();
@@ -58,6 +58,7 @@ export default async function EditPostPage({
     author_name: string | null;
     status: string | null;
     published_at: string | null;
+    cover_image: string | null;
   };
 
   const defaults: PostFormValues = {
@@ -69,6 +70,7 @@ export default async function EditPostPage({
     author_name: row.author_name ?? "",
     status: coerceStatus(row.status),
     published_at: isoToInputDate(row.published_at),
+    cover_image: row.cover_image ?? "",
   };
 
   return (

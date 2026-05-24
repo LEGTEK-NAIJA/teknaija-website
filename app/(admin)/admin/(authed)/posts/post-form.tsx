@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useTransition } from "react";
+import { useEffect, useState, useTransition } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
@@ -28,17 +28,31 @@ import {
   type ActionResult,
 } from "./actions";
 
+function slugify(input: string): string {
+  return input
+    .toLowerCase()
+    .normalize("NFKD")
+    .replace(/[\u0300-\u036f]/g, "") // strip diacritics
+    .replace(/[^a-z0-9\s-]/g, "") // strip punctuation
+    .trim()
+    .replace(/\s+/g, "-") // spaces -> hyphens
+    .replace(/-+/g, "-") // collapse runs of hyphens
+    .slice(0, 80); // cap length
+}
+
 type Props =
   | { mode: "create"; defaultValues?: Partial<PostFormValues>; id?: undefined }
   | { mode: "edit"; defaultValues: PostFormValues; id: string };
 
 export function PostForm(props: Props) {
   const [pending, startTransition] = useTransition();
+  const [slugDirty, setSlugDirty] = useState(props.mode === "edit");
   const {
     register,
     handleSubmit,
     control,
     setError,
+    setValue,
     watch,
     formState: { errors },
   } = useForm<PostFormValues>({
@@ -47,6 +61,14 @@ export function PostForm(props: Props) {
   });
 
   const status = watch("status");
+  const titleValue = watch("title");
+
+  useEffect(() => {
+    if (slugDirty) return;
+    if (props.mode === "edit") return;
+    if (!titleValue) return;
+    setValue("slug", slugify(titleValue), { shouldValidate: false });
+  }, [titleValue, slugDirty, setValue, props.mode]);
 
   const onSubmit = handleSubmit((values) => {
     startTransition(async () => {
@@ -89,7 +111,9 @@ export function PostForm(props: Props) {
             className={`${inputClass} font-mono`}
             placeholder="why-nigerian-dispute-resolution-needs-its-own-architecture"
             aria-invalid={Boolean(errors.slug)}
-            {...register("slug")}
+            {...register("slug", {
+              onChange: () => setSlugDirty(true),
+            })}
           />
           <FieldError>{errors.slug?.message}</FieldError>
         </div>
@@ -158,6 +182,23 @@ export function PostForm(props: Props) {
               : "Optional while in draft."}
           </FieldHelp>
           <FieldError>{errors.published_at?.message}</FieldError>
+        </div>
+
+        <div className="md:col-span-2">
+          <FieldLabel htmlFor="cover_image">Cover image URL</FieldLabel>
+          <input
+            id="cover_image"
+            type="url"
+            className={`${inputClass} font-mono`}
+            placeholder="https://teknaija.legtek.ng/insights/cover-image.jpg"
+            aria-invalid={Boolean(errors.cover_image)}
+            {...register("cover_image")}
+          />
+          <FieldHelp>
+            Optional. URL of the image shown on the post card and at the top of
+            the article.
+          </FieldHelp>
+          <FieldError>{errors.cover_image?.message}</FieldError>
         </div>
       </div>
 
