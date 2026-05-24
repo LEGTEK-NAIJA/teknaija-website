@@ -21,7 +21,7 @@ export const metadata: Metadata = {
     template: "%s — TEK NAIJA",
   },
   description:
-    "A Lagos-headquartered technology holding company shipping sovereign-grade software for justice, commerce, and the institutions of a continent in motion. RC 9181824.",
+    "A Lagos-headquartered technology firm holding a portfolio of owned software (LEGTEK NAIJA, LITIGATEIQ) and building software for Nigerian institutions that need it built. RC 9181824.",
   applicationName: "TEK NAIJA",
   authors: [{ name: "TEK NAIJA LTD", url: SITE_URL }],
   creator: "TEK NAIJA LTD",
@@ -48,7 +48,7 @@ export const metadata: Metadata = {
     siteName: "TEK NAIJA",
     title: "TEK NAIJA — We build the systems Nigeria runs on.",
     description:
-      "A Lagos-headquartered technology holding company shipping sovereign-grade software for justice, commerce, and institutional infrastructure.",
+      "A Lagos-headquartered technology firm holding a portfolio of owned software (LEGTEK NAIJA, LITIGATEIQ) and building software for Nigerian institutions that need it built.",
     images: [
       {
         url: `${SITE_URL}/api/og`,
@@ -62,7 +62,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "TEK NAIJA — We build the systems Nigeria runs on.",
     description:
-      "Lagos-headquartered technology holding company. Sovereign-grade software for justice, commerce, and institutions.",
+      "Lagos-headquartered technology firm. Portfolio of owned software, plus engineering for Nigerian institutions.",
     images: [`${SITE_URL}/api/og`],
   },
   robots: {

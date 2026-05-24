@@ -12,7 +12,7 @@ export async function GET(request: Request) {
   const eyebrow = searchParams.get("eyebrow") ?? "TEK NAIJA";
   const subtitle =
     searchParams.get("subtitle") ??
-    "A Lagos-headquartered technology holding company.";
+    "Lagos-headquartered technology firm. A portfolio of owned software, and engineering for Nigerian institutions.";
 
   return new ImageResponse(
     (

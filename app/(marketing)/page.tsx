@@ -385,9 +385,9 @@ function Hero() {
             "
             style={delayStyle(SUBHEAD_DELAY_MS)}
           >
-            A Lagos-headquartered technology holding company shipping
-            sovereign-grade software for justice, commerce, and the
-            institutions of a continent in motion.
+            A Lagos-headquartered technology firm. We hold a portfolio of
+            software we own, and we build software for the Nigerian
+            institutions that need it built — courts, exporters, chambers.
           </p>
 
           <div className="min-h-4 flex-1 shrink-0" aria-hidden />
@@ -513,7 +513,7 @@ function SelectedWork({ projects }: { projects: ProjectRow[] }) {
         {rows.map((project, idx) => {
           const subtitleMap: Record<string, string> = {
             "legtek-naija": "Ìdájọ́ — Justice as system",
-            "stk-industries": "Ìṣòwò — Trade as infrastructure",
+            "stk-industries": "Ìṣòwò — Built for STK Industries Ltd",
             litigateiq: "NLIS — Intelligence over precedent",
           };
           const subtitle = subtitleMap[project.slug ?? ""];
