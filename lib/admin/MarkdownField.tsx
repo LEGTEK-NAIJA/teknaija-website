@@ -1,5 +1,6 @@
 "use client";
 
+import type { ReactNode, RefObject } from "react";
 import { useState } from "react";
 
 import { MarkdownPreview } from "./markdown";
@@ -14,6 +15,8 @@ type Props = {
   value?: string;
   onChange?: (value: string) => void;
   ariaInvalid?: boolean;
+  textareaRef?: RefObject<HTMLTextAreaElement | null>;
+  toolbar?: ReactNode;
 };
 
 /**
@@ -30,16 +33,23 @@ export function MarkdownField({
   value,
   onChange,
   ariaInvalid,
+  textareaRef,
+  toolbar,
 }: Props) {
   const [internal, setInternal] = useState(defaultValue);
   const isControlled = value !== undefined;
   const current = isControlled ? (value as string) : internal;
 
   return (
-    <div className="grid grid-cols-1 gap-3 lg:grid-cols-2">
+    <div>
+      {toolbar ? (
+        <div className="mb-2 flex items-center gap-2">{toolbar}</div>
+      ) : null}
+      <div className="grid grid-cols-1 gap-3 lg:grid-cols-2">
       <textarea
         id={id}
         name={name}
+        ref={textareaRef}
         rows={rows}
         value={current}
         placeholder={placeholder}
@@ -76,6 +86,7 @@ export function MarkdownField({
             </span>
           );
         })()}
+      </div>
       </div>
     </div>
   );

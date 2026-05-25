@@ -1,10 +1,11 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState, useTransition } from "react";
+import { useEffect, useRef, useState, useTransition } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
+import { ImageUploadButton } from "@/components/admin/ImageUploadButton";
 import { MarkdownField } from "@/lib/admin/MarkdownField";
 import {
   FieldError,
@@ -47,6 +48,7 @@ type Props =
 export function PostForm(props: Props) {
   const [pending, startTransition] = useTransition();
   const [slugDirty, setSlugDirty] = useState(props.mode === "edit");
+  const bodyTextareaRef = useRef<HTMLTextAreaElement>(null);
   const {
     register,
     handleSubmit,
@@ -62,6 +64,31 @@ export function PostForm(props: Props) {
 
   const status = watch("status");
   const titleValue = watch("title");
+  const coverImage = watch("cover_image");
+  const bodyValue = watch("body");
+
+  function insertImageAtCursor(url: string) {
+    const ta = bodyTextareaRef.current;
+    const insertion = `![](${url})`;
+    if (!ta) {
+      setValue(
+        "body",
+        `${bodyValue ?? ""}\n\n${insertion}\n`,
+        { shouldDirty: true, shouldValidate: true }
+      );
+      return;
+    }
+    const start = ta.selectionStart;
+    const end = ta.selectionEnd;
+    const current = bodyValue ?? "";
+    const next = current.slice(0, start) + insertion + current.slice(end);
+    setValue("body", next, { shouldDirty: true, shouldValidate: true });
+    requestAnimationFrame(() => {
+      ta.focus();
+      const pos = start + insertion.length;
+      ta.setSelectionRange(pos, pos);
+    });
+  }
 
   useEffect(() => {
     if (slugDirty) return;
@@ -186,14 +213,34 @@ export function PostForm(props: Props) {
 
         <div className="md:col-span-2">
           <FieldLabel htmlFor="cover_image">Cover image URL</FieldLabel>
-          <input
-            id="cover_image"
-            type="url"
-            className={`${inputClass} font-mono`}
-            placeholder="https://teknaija.legtek.ng/insights/cover-image.jpg"
-            aria-invalid={Boolean(errors.cover_image)}
-            {...register("cover_image")}
-          />
+          <div className="flex items-end gap-2">
+            <div className="min-w-0 flex-1">
+              <input
+                id="cover_image"
+                type="url"
+                className={`${inputClass} font-mono`}
+                placeholder="https://teknaija.legtek.ng/insights/cover-image.jpg"
+                aria-invalid={Boolean(errors.cover_image)}
+                {...register("cover_image")}
+              />
+            </div>
+            <ImageUploadButton
+              label="Upload"
+              onUploaded={(url) =>
+                setValue("cover_image", url, {
+                  shouldDirty: true,
+                  shouldValidate: true,
+                })
+              }
+            />
+          </div>
+          {coverImage ? (
+            <img
+              src={coverImage}
+              alt=""
+              className="mt-2 h-32 w-auto rounded-md border border-slate-200 object-cover"
+            />
+          ) : null}
           <FieldHelp>
             Optional. URL of the image shown on the post card and at the top of
             the article.
@@ -215,6 +262,13 @@ export function PostForm(props: Props) {
               name={field.name}
               value={field.value ?? ""}
               onChange={field.onChange}
+              textareaRef={bodyTextareaRef}
+              toolbar={
+                <ImageUploadButton
+                  label="Insert image"
+                  onUploaded={insertImageAtCursor}
+                />
+              }
               placeholder="Write the post in markdown — pull quotes, lists, links, fenced code blocks all supported."
               ariaInvalid={Boolean(errors.body)}
             />
