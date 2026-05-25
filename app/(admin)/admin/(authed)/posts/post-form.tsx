@@ -7,6 +7,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 
 import { ImageUploadButton } from "@/components/admin/ImageUploadButton";
 import { MarkdownField } from "@/lib/admin/MarkdownField";
+import { deletePostImage } from "@/lib/storage/delete-post-image";
 import {
   FieldError,
   FieldHelp,
@@ -48,6 +49,8 @@ type Props =
 export function PostForm(props: Props) {
   const [pending, startTransition] = useTransition();
   const [slugDirty, setSlugDirty] = useState(props.mode === "edit");
+  const [removing, setRemoving] = useState(false);
+  const [removeError, setRemoveError] = useState<string | null>(null);
   const bodyTextareaRef = useRef<HTMLTextAreaElement>(null);
   const {
     register,
@@ -66,6 +69,20 @@ export function PostForm(props: Props) {
   const titleValue = watch("title");
   const coverImage = watch("cover_image");
   const bodyValue = watch("body");
+
+  async function handleRemoveCover() {
+    const current = coverImage;
+    if (!current) return;
+    setRemoveError(null);
+    setRemoving(true);
+    const result = await deletePostImage(current);
+    setRemoving(false);
+    if (!result.ok) {
+      setRemoveError(result.error);
+      return;
+    }
+    setValue("cover_image", "", { shouldDirty: true, shouldValidate: true });
+  }
 
   function insertImageAtCursor(url: string) {
     const ta = bodyTextareaRef.current;
@@ -235,11 +252,25 @@ export function PostForm(props: Props) {
             />
           </div>
           {coverImage ? (
-            <img
-              src={coverImage}
-              alt=""
-              className="mt-2 h-32 w-auto rounded-md border border-slate-200 object-cover"
-            />
+            <div className="relative mt-2 inline-block">
+              <img
+                src={coverImage}
+                alt=""
+                className="h-32 w-auto rounded-md border border-slate-200 object-cover"
+              />
+              <button
+                type="button"
+                onClick={handleRemoveCover}
+                disabled={removing}
+                aria-label="Remove cover image"
+                className="absolute -right-2 -top-2 flex h-6 w-6 items-center justify-center rounded-full border border-slate-300 bg-white text-sm text-slate-700 shadow-sm hover:bg-slate-50 disabled:opacity-50"
+              >
+                {removing ? "…" : "×"}
+              </button>
+              {removeError ? (
+                <p className="mt-1 text-xs text-red-600">{removeError}</p>
+              ) : null}
+            </div>
           ) : null}
           <FieldHelp>
             Optional. URL of the image shown on the post card and at the top of
