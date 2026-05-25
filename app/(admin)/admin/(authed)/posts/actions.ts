@@ -4,6 +4,8 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
 import { requireAdminSession } from "@/lib/admin/auth";
+import { deletePostImagesServer } from "@/lib/storage/delete-post-images-server";
+import { extractPostImagePaths } from "@/lib/storage/extract-post-image-urls";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
 import { PostFormSchema, type PostFormValues } from "./schema";
@@ -86,6 +88,26 @@ export async function updatePostAction(
   }
 
   const supabase = await createSupabaseServerClient();
+
+  const { data: existing } = await supabase
+    .from("posts")
+    .select("body, cover_image")
+    .eq("id", id)
+    .single();
+
+  const oldPaths = new Set<string>([
+    ...extractPostImagePaths(existing?.body),
+    ...extractPostImagePaths(existing?.cover_image),
+  ]);
+  const newPaths = new Set<string>([
+    ...extractPostImagePaths(parsed.data.body),
+    ...extractPostImagePaths(toCoverImageUrl(parsed.data.cover_image)),
+  ]);
+  const orphaned: string[] = [];
+  for (const p of oldPaths) {
+    if (!newPaths.has(p)) orphaned.push(p);
+  }
+
   const { error } = await supabase
     .from("posts")
     .update({
@@ -105,6 +127,12 @@ export async function updatePostAction(
     return { ok: false, error: error.message };
   }
 
+  if (orphaned.length > 0) {
+    await deletePostImagesServer(orphaned).catch((e) =>
+      console.warn("[storage cleanup] post-save sweep failed:", e)
+    );
+  }
+
   revalidatePostRoutes(parsed.data.slug);
   redirect("/admin/posts");
 }
@@ -113,6 +141,25 @@ export async function deletePostAction(id: string): Promise<ActionResult> {
   await requireAdminSession();
 
   const supabase = await createSupabaseServerClient();
+
+  const { data: existing } = await supabase
+    .from("posts")
+    .select("body, cover_image")
+    .eq("id", id)
+    .single();
+
+  if (existing) {
+    const allPaths = new Set<string>([
+      ...extractPostImagePaths(existing.body),
+      ...extractPostImagePaths(existing.cover_image),
+    ]);
+    if (allPaths.size > 0) {
+      await deletePostImagesServer([...allPaths]).catch((e) =>
+        console.warn("[storage cleanup] post-delete sweep failed:", e)
+      );
+    }
+  }
+
   const { error } = await supabase.from("posts").delete().eq("id", id);
   if (error) {
     console.error("[admin/posts.delete]", { id, error });
