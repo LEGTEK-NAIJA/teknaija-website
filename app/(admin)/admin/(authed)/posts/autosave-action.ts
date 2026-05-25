@@ -8,7 +8,24 @@ import { extractPostImagePath } from "@/lib/storage/delete-post-image";
 import { extractPostImagePaths } from "@/lib/storage/extract-post-image-urls";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
-import { PostFormSchema, type PostFormValues } from "./schema";
+import { PostAutosaveSchema, type PostFormValues } from "./schema";
+
+function slugFromTitle(title: string): string {
+  return title
+    .toLowerCase()
+    .normalize("NFKD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^a-z0-9\s-]/g, "")
+    .trim()
+    .replace(/\s+/g, "-")
+    .replace(/-+/g, "-")
+    .slice(0, 80);
+}
+
+function resolveAutosaveSlug(slug: string, title: string): string {
+  const trimmed = slug.trim();
+  return trimmed.length > 0 ? trimmed : slugFromTitle(title);
+}
 
 function toPublishedAtIso(input: string | undefined | null) {
   if (!input) return null;
@@ -35,7 +52,7 @@ export async function autosaveCreatePostAction(
 ): Promise<AutosaveResult> {
   await requireAdminSession();
 
-  const parsed = PostFormSchema.safeParse(values);
+  const parsed = PostAutosaveSchema.safeParse(values);
   if (!parsed.success) {
     return {
       ok: false,
@@ -43,11 +60,13 @@ export async function autosaveCreatePostAction(
     };
   }
 
+  const slug = resolveAutosaveSlug(parsed.data.slug, parsed.data.title);
+
   const supabase = await createSupabaseServerClient();
   const { data, error } = await supabase
     .from("posts")
     .insert({
-      slug: parsed.data.slug,
+      slug,
       title: parsed.data.title,
       dek: parsed.data.dek || null,
       body: parsed.data.body,
@@ -75,13 +94,15 @@ export async function autosaveUpdatePostAction(
 ): Promise<AutosaveResult> {
   await requireAdminSession();
 
-  const parsed = PostFormSchema.safeParse(values);
+  const parsed = PostAutosaveSchema.safeParse(values);
   if (!parsed.success) {
     return {
       ok: false,
       error: parsed.error.issues[0]?.message ?? "Validation failed.",
     };
   }
+
+  const slug = resolveAutosaveSlug(parsed.data.slug, parsed.data.title);
 
   const supabase = await createSupabaseServerClient();
 
@@ -94,7 +115,7 @@ export async function autosaveUpdatePostAction(
   const { error } = await supabase
     .from("posts")
     .update({
-      slug: parsed.data.slug,
+      slug,
       title: parsed.data.title,
       dek: parsed.data.dek || null,
       body: parsed.data.body,

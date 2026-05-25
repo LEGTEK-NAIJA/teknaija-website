@@ -39,6 +39,35 @@ export const PostFormSchema = PostBaseSchema.refine(
 
 export type PostFormValues = z.infer<typeof PostFormSchema>;
 
+/**
+ * Relaxed schema used only for autosave. Drafts are legitimately partial;
+ * explicit Save still uses PostFormSchema.
+ */
+export const PostAutosaveSchema = z.object({
+  slug: z
+    .string()
+    .trim()
+    .max(120, "Slug must be 120 characters or fewer.")
+    .refine(
+      (s) => s === "" || SLUG_RE.test(s),
+      "Use lowercase letters, numbers and hyphens only."
+    ),
+  title: z.string().trim().min(2, "Title is required."),
+  dek: z.string().trim().max(280, "Dek should stay under 280 characters."),
+  body: z.string(),
+  author_name: z.string().trim().max(120, "Author name is too long."),
+  status: z.enum(PostStatuses),
+  published_at: z.string().trim(),
+  cover_image: z
+    .string()
+    .url({ message: "Cover image must be a valid URL." })
+    .or(z.literal(""))
+    .optional()
+    .nullable(),
+});
+
+export type PostAutosaveValues = z.infer<typeof PostAutosaveSchema>;
+
 export const POST_DEFAULTS: PostFormValues = {
   slug: "",
   title: "",
