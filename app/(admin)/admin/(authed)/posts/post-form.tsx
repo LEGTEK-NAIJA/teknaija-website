@@ -6,6 +6,7 @@ import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import { ImageUploadButton } from "@/components/admin/ImageUploadButton";
+import { MarkdownToolbar } from "@/components/admin/MarkdownToolbar";
 import { MarkdownField } from "@/lib/admin/MarkdownField";
 import {
   deletePostImage,
@@ -334,9 +335,11 @@ export function PostForm(props: Props) {
               onChange={field.onChange}
               textareaRef={bodyTextareaRef}
               toolbar={
-                <ImageUploadButton
-                  label="Insert image"
-                  onUploaded={insertImageAtCursor}
+                <MarkdownToolbar
+                  textareaRef={bodyTextareaRef}
+                  value={field.value ?? ""}
+                  onChange={field.onChange}
+                  onImageUploaded={insertImageAtCursor}
                 />
               }
               placeholder="Write the post in markdown — pull quotes, lists, links, fenced code blocks all supported."

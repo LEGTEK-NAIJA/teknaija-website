@@ -43,7 +43,9 @@ export function MarkdownField({
   return (
     <div>
       {toolbar ? (
-        <div className="mb-2 flex items-center gap-2">{toolbar}</div>
+        <div className="mb-2 flex items-center gap-2 border-b border-slate-200 pb-2">
+          {toolbar}
+        </div>
       ) : null}
       <div className="grid grid-cols-1 gap-3 lg:grid-cols-2">
       <textarea
