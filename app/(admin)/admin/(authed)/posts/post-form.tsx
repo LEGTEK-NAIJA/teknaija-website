@@ -7,7 +7,11 @@ import { zodResolver } from "@hookform/resolvers/zod";
 
 import { ImageUploadButton } from "@/components/admin/ImageUploadButton";
 import { MarkdownField } from "@/lib/admin/MarkdownField";
-import { deletePostImage } from "@/lib/storage/delete-post-image";
+import {
+  deletePostImage,
+  extractPostImagePath,
+} from "@/lib/storage/delete-post-image";
+import { extractPostImagePaths } from "@/lib/storage/extract-post-image-urls";
 import {
   FieldError,
   FieldHelp,
@@ -74,7 +78,19 @@ export function PostForm(props: Props) {
   async function handleRemoveCover() {
     const current = getValues("cover_image");
     if (!current) return;
+
     setRemoveError(null);
+
+    const body = getValues("body") ?? "";
+    const coverPath = extractPostImagePath(current);
+    const bodyPaths = extractPostImagePaths(body);
+    const stillReferenced = coverPath && bodyPaths.has(coverPath);
+
+    if (stillReferenced) {
+      setValue("cover_image", "", { shouldDirty: true, shouldValidate: true });
+      return;
+    }
+
     setRemoving(true);
     const result = await deletePostImage(current);
     setRemoving(false);
@@ -87,12 +103,21 @@ export function PostForm(props: Props) {
 
   async function handleCoverUploaded(newUrl: string) {
     const previous = getValues("cover_image");
+
     if (previous && previous !== newUrl) {
-      const result = await deletePostImage(previous);
-      if (!result.ok) {
-        console.warn("[cover] failed to delete previous file:", result.error);
+      const body = getValues("body") ?? "";
+      const previousPath = extractPostImagePath(previous);
+      const bodyPaths = extractPostImagePaths(body);
+      const stillReferenced = previousPath && bodyPaths.has(previousPath);
+
+      if (!stillReferenced) {
+        const result = await deletePostImage(previous);
+        if (!result.ok) {
+          console.warn("[cover] failed to delete previous file:", result.error);
+        }
       }
     }
+
     setValue("cover_image", newUrl, {
       shouldDirty: true,
       shouldValidate: true,
