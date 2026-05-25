@@ -84,6 +84,20 @@ export function PostForm(props: Props) {
     setValue("cover_image", "", { shouldDirty: true, shouldValidate: true });
   }
 
+  async function handleCoverUploaded(newUrl: string) {
+    const previous = coverImage;
+    if (previous && previous !== newUrl) {
+      const result = await deletePostImage(previous);
+      if (!result.ok) {
+        console.warn("[cover] failed to delete previous file:", result.error);
+      }
+    }
+    setValue("cover_image", newUrl, {
+      shouldDirty: true,
+      shouldValidate: true,
+    });
+  }
+
   function insertImageAtCursor(url: string) {
     const ta = bodyTextareaRef.current;
     const insertion = `![](${url})`;
@@ -243,12 +257,7 @@ export function PostForm(props: Props) {
             </div>
             <ImageUploadButton
               label="Upload"
-              onUploaded={(url) =>
-                setValue("cover_image", url, {
-                  shouldDirty: true,
-                  shouldValidate: true,
-                })
-              }
+              onUploaded={handleCoverUploaded}
             />
           </div>
           {coverImage ? (
