@@ -20,7 +20,7 @@ export default async function EditTeamMemberPage({
   const supabase = await createSupabaseServerClient();
   const { data, error } = await supabase
     .from("team_members")
-    .select("id, name, role, bio, display_order, active")
+    .select("id, name, role, bio, display_order, active, headshot")
     .eq("id", id)
     .maybeSingle();
 
@@ -35,6 +35,7 @@ export default async function EditTeamMemberPage({
     bio: string | null;
     display_order: number | null;
     active: boolean | null;
+    headshot: string | null;
   };
 
   const defaults: TeamFormValues = {
@@ -44,6 +45,7 @@ export default async function EditTeamMemberPage({
     bio: row.bio ?? "",
     display_order: row.display_order ?? 0,
     active: row.active ?? true,
+    headshot: row.headshot ?? "",
   };
 
   return (

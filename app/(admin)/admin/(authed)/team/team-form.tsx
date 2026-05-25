@@ -2,9 +2,10 @@
 
 import Link from "next/link";
 import { useTransition } from "react";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
+import { CoverImageField } from "@/components/admin/CoverImageField";
 import {
   FieldError,
   FieldLabel,
@@ -35,6 +36,7 @@ export function TeamForm(props: Props) {
     register,
     handleSubmit,
     setError,
+    control,
     formState: { errors },
   } = useForm<TeamFormValues>({
     resolver: zodResolver(TeamFormSchema),
@@ -124,6 +126,20 @@ export function TeamForm(props: Props) {
         />
         <FieldError>{errors.bio?.message}</FieldError>
       </div>
+
+      <Controller
+        control={control}
+        name="headshot"
+        render={({ field, fieldState }) => (
+          <CoverImageField
+            bucket="team-headshots"
+            label="Headshot"
+            value={field.value ?? ""}
+            onChange={field.onChange}
+            errorMessage={fieldState.error?.message}
+          />
+        )}
+      />
 
       <div className="flex items-center justify-end gap-3 border-t border-slate-200 pt-5">
         <Link href="/admin/team">

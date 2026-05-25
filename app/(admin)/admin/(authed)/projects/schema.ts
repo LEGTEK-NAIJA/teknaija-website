@@ -33,6 +33,17 @@ export const ProjectFormSchema = z.object({
     .number({ error: "Display order must be a non-negative integer." })
     .int()
     .min(0),
+  cover_image: z
+    .string()
+    .url({ message: "Cover image must be a valid URL." })
+    .or(z.literal(""))
+    .optional()
+    .nullable(),
+  stack: z.array(z.string().trim().min(1)),
+  gallery_images: z.array(z.string().url()),
+  outcomes: z.array(
+    z.object({ label: z.string().trim(), value: z.string().trim() })
+  ),
 });
 
 export type ProjectFormValues = z.infer<typeof ProjectFormSchema>;
@@ -45,4 +56,8 @@ export const PROJECT_DEFAULTS: ProjectFormValues = {
   body: "",
   featured: false,
   display_order: 0,
+  cover_image: "",
+  stack: [],
+  gallery_images: [],
+  outcomes: [],
 };

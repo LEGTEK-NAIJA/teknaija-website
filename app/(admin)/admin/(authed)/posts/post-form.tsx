@@ -299,6 +299,7 @@ export function PostForm(props: Props) {
               />
             </div>
             <ImageUploadButton
+              bucket="post-images"
               label="Upload"
               onUploaded={handleCoverUploaded}
             />

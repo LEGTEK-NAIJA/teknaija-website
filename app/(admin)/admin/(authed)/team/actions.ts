@@ -12,6 +12,11 @@ export type ActionResult =
   | { ok: true }
   | { ok: false; error: string };
 
+function toHeadshotUrl(input: string | undefined | null) {
+  const trimmed = (input ?? "").trim();
+  return trimmed.length > 0 ? trimmed : null;
+}
+
 function revalidateTeamRoutes() {
   revalidatePath("/admin/team");
   revalidatePath("/admin");
@@ -40,6 +45,7 @@ export async function createTeamMemberAction(
     bio: parsed.data.bio || null,
     display_order: parsed.data.display_order,
     active: parsed.data.active,
+    headshot: toHeadshotUrl(parsed.data.headshot),
   });
 
   if (error) {
@@ -75,6 +81,7 @@ export async function updateTeamMemberAction(
       bio: parsed.data.bio || null,
       display_order: parsed.data.display_order,
       active: parsed.data.active,
+      headshot: toHeadshotUrl(parsed.data.headshot),
     })
     .eq("id", id);
 

@@ -4,6 +4,10 @@ import { useTransition } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
+import { CoverImageField } from "@/components/admin/CoverImageField";
+import { GalleryField } from "@/components/admin/GalleryField";
+import { OutcomesField } from "@/components/admin/OutcomesField";
+import { TagInputField } from "@/components/admin/TagInputField";
 import { MarkdownField } from "@/lib/admin/MarkdownField";
 import {
   FieldError,
@@ -38,6 +42,7 @@ export function ProjectForm(props: Props) {
     handleSubmit,
     control,
     setError,
+    watch,
     formState: { errors },
   } = useForm<ProjectFormValues>({
     resolver: zodResolver(ProjectFormSchema),
@@ -150,6 +155,24 @@ export function ProjectForm(props: Props) {
         </div>
       </div>
 
+      <Controller
+        control={control}
+        name="cover_image"
+        render={({ field, fieldState }) => (
+          <CoverImageField
+            bucket="project-images"
+            label="Cover image"
+            value={field.value ?? ""}
+            onChange={field.onChange}
+            errorMessage={fieldState.error?.message}
+            alsoReferencedIn={[
+              watch("body") ?? "",
+              ...(watch("gallery_images") ?? []),
+            ]}
+          />
+        )}
+      />
+
       <div>
         <FieldLabel htmlFor="body" required>
           Body (Markdown)
@@ -170,6 +193,47 @@ export function ProjectForm(props: Props) {
         />
         <FieldError>{errors.body?.message}</FieldError>
       </div>
+
+      <Controller
+        control={control}
+        name="stack"
+        render={({ field }) => (
+          <TagInputField
+            label="Stack"
+            value={field.value ?? []}
+            onChange={field.onChange}
+            placeholder="Next.js 15, Supabase, TypeScript…"
+            help="Press Enter or comma to add. Backspace to remove last."
+          />
+        )}
+      />
+
+      <Controller
+        control={control}
+        name="gallery_images"
+        render={({ field }) => (
+          <GalleryField
+            label="Gallery"
+            bucket="project-images"
+            value={field.value ?? []}
+            onChange={field.onChange}
+            help="Up to ~5 images for the case study page."
+          />
+        )}
+      />
+
+      <Controller
+        control={control}
+        name="outcomes"
+        render={({ field }) => (
+          <OutcomesField
+            label="Outcomes"
+            value={field.value ?? []}
+            onChange={field.onChange}
+            help="Label + value pairs rendered as small stat blocks on the case page."
+          />
+        )}
+      />
 
       <div className="flex items-center justify-end gap-3 border-t border-slate-200 pt-5">
         <Link href="/admin/projects">

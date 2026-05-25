@@ -12,6 +12,27 @@ export type ActionResult =
   | { ok: true }
   | { ok: false; error: string };
 
+function toCoverImageUrl(input: string | undefined | null) {
+  const trimmed = (input ?? "").trim();
+  return trimmed.length > 0 ? trimmed : null;
+}
+
+function projectPayload(parsed: ProjectFormValues) {
+  return {
+    slug: parsed.slug,
+    title: parsed.title,
+    sector: parsed.sector,
+    status: parsed.status,
+    body: parsed.body,
+    featured: parsed.featured,
+    display_order: parsed.display_order,
+    cover_image: toCoverImageUrl(parsed.cover_image),
+    stack: parsed.stack,
+    gallery_images: parsed.gallery_images,
+    outcomes: parsed.outcomes,
+  };
+}
+
 function revalidateProjectRoutes() {
   revalidatePath("/admin/projects");
   revalidatePath("/admin");
@@ -34,15 +55,7 @@ export async function createProjectAction(
   }
 
   const supabase = await createSupabaseServerClient();
-  const { error } = await supabase.from("projects").insert({
-    slug: parsed.data.slug,
-    title: parsed.data.title,
-    sector: parsed.data.sector,
-    status: parsed.data.status,
-    body: parsed.data.body,
-    featured: parsed.data.featured,
-    display_order: parsed.data.display_order,
-  });
+  const { error } = await supabase.from("projects").insert(projectPayload(parsed.data));
 
   if (error) {
     console.error("[admin/projects.create]", error);
@@ -71,15 +84,7 @@ export async function updateProjectAction(
   const supabase = await createSupabaseServerClient();
   const { error } = await supabase
     .from("projects")
-    .update({
-      slug: parsed.data.slug,
-      title: parsed.data.title,
-      sector: parsed.data.sector,
-      status: parsed.data.status,
-      body: parsed.data.body,
-      featured: parsed.data.featured,
-      display_order: parsed.data.display_order,
-    })
+    .update(projectPayload(parsed.data))
     .eq("id", id);
 
   if (error) {

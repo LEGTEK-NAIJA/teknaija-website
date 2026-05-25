@@ -223,7 +223,11 @@ export function MarkdownToolbar({
         >
           <LinkIcon />
         </ToolbarButton>
-        <ImageUploadButton label="Insert image" onUploaded={onImageUploaded} />
+        <ImageUploadButton
+          bucket="post-images"
+          label="Insert image"
+          onUploaded={onImageUploaded}
+        />
       </ToolbarGroup>
     </div>
   );

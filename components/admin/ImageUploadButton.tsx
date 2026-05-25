@@ -3,15 +3,17 @@
 import { useRef, useState } from "react";
 
 import { SecondaryButton } from "@/lib/admin/ui";
-import { uploadPostImage } from "@/lib/storage/upload-post-image";
+import { uploadImage } from "@/lib/storage/upload-image";
 
 type Props = {
+  bucket: string;
   onUploaded: (url: string) => void;
   label?: string;
   className?: string;
 };
 
 export function ImageUploadButton({
+  bucket,
   onUploaded,
   label = "Upload image",
   className = "",
@@ -25,7 +27,7 @@ export function ImageUploadButton({
     if (!file) return;
     setError(null);
     setBusy(true);
-    const result = await uploadPostImage(file);
+    const result = await uploadImage(file, bucket);
     setBusy(false);
     if (inputRef.current) inputRef.current.value = "";
     if (!result.ok) {

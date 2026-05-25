@@ -9,6 +9,12 @@ export const TeamFormSchema = z.object({
     .int()
     .min(0),
   active: z.boolean(),
+  headshot: z
+    .string()
+    .url({ message: "Headshot must be a valid URL." })
+    .or(z.literal(""))
+    .optional()
+    .nullable(),
 });
 
 export type TeamFormValues = z.infer<typeof TeamFormSchema>;
@@ -19,4 +25,5 @@ export const TEAM_DEFAULTS: TeamFormValues = {
   bio: "",
   display_order: 0,
   active: true,
+  headshot: "",
 };
