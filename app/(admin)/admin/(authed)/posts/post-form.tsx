@@ -58,6 +58,7 @@ export function PostForm(props: Props) {
     control,
     setError,
     setValue,
+    getValues,
     watch,
     formState: { errors },
   } = useForm<PostFormValues>({
@@ -71,7 +72,7 @@ export function PostForm(props: Props) {
   const bodyValue = watch("body");
 
   async function handleRemoveCover() {
-    const current = coverImage;
+    const current = getValues("cover_image");
     if (!current) return;
     setRemoveError(null);
     setRemoving(true);
@@ -85,7 +86,7 @@ export function PostForm(props: Props) {
   }
 
   async function handleCoverUploaded(newUrl: string) {
-    const previous = coverImage;
+    const previous = getValues("cover_image");
     if (previous && previous !== newUrl) {
       const result = await deletePostImage(previous);
       if (!result.ok) {
@@ -269,10 +270,14 @@ export function PostForm(props: Props) {
               />
               <button
                 type="button"
-                onClick={handleRemoveCover}
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  void handleRemoveCover();
+                }}
                 disabled={removing}
                 aria-label="Remove cover image"
-                className="absolute -right-2 -top-2 flex h-6 w-6 items-center justify-center rounded-full border border-slate-300 bg-white text-sm text-slate-700 shadow-sm hover:bg-slate-50 disabled:opacity-50"
+                className="absolute -right-2 -top-2 z-10 flex h-6 w-6 items-center justify-center rounded-full border border-slate-300 bg-white text-sm text-slate-700 shadow-sm hover:bg-slate-50 disabled:opacity-50"
               >
                 {removing ? "…" : "×"}
               </button>
