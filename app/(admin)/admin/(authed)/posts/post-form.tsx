@@ -5,6 +5,7 @@ import { useEffect, useRef, useState, useTransition } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
+import { AutosaveDot } from "@/components/admin/AutosaveDot";
 import { ImageUploadButton } from "@/components/admin/ImageUploadButton";
 import { MarkdownToolbar } from "@/components/admin/MarkdownToolbar";
 import { MarkdownField } from "@/lib/admin/MarkdownField";
@@ -34,6 +35,7 @@ import {
   updatePostAction,
   type ActionResult,
 } from "./actions";
+import { useAutosave } from "./use-autosave";
 
 function slugify(input: string): string {
   return input
@@ -65,11 +67,22 @@ export function PostForm(props: Props) {
     setValue,
     getValues,
     watch,
-    formState: { errors },
+    formState: { errors, isDirty, isSubmitting },
   } = useForm<PostFormValues>({
     resolver: zodResolver(PostFormSchema),
     defaultValues: { ...POST_DEFAULTS, ...props.defaultValues },
   });
+
+  const watchedValues = watch();
+
+  const { state: autosaveState, currentId } = useAutosave({
+    values: watchedValues,
+    isDirty,
+    id: props.mode === "edit" ? props.id : null,
+    isSubmitting: isSubmitting || pending,
+  });
+
+  const savePostId = props.mode === "edit" ? props.id : currentId;
 
   const status = watch("status");
   const titleValue = watch("title");
@@ -158,8 +171,8 @@ export function PostForm(props: Props) {
   const onSubmit = handleSubmit((values) => {
     startTransition(async () => {
       let result: ActionResult;
-      if (props.mode === "edit") {
-        result = await updatePostAction(props.id, values);
+      if (savePostId) {
+        result = await updatePostAction(savePostId, values);
       } else {
         result = await createPostAction(values);
       }
@@ -171,6 +184,9 @@ export function PostForm(props: Props) {
 
   return (
     <form onSubmit={onSubmit} className="space-y-6">
+      <div className="flex items-center justify-end gap-2 text-xs text-slate-500">
+        <AutosaveDot state={autosaveState} />
+      </div>
       <FlashError>{errors.root?.message}</FlashError>
 
       <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
@@ -357,7 +373,7 @@ export function PostForm(props: Props) {
         <PrimaryButton type="submit" disabled={pending}>
           {pending
             ? "Saving…"
-            : props.mode === "edit"
+            : savePostId
               ? "Save changes"
               : "Create post"}
         </PrimaryButton>
