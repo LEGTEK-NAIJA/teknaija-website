@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import ReactMarkdown from "react-markdown";
@@ -65,6 +66,7 @@ export default async function InsightPostPage({
         dek={post.dek ?? ""}
         display={display}
         isoDay={isoDay}
+        coverImage={post.cover_image ?? null}
       />
 
       <Body markdown={post.body ?? ""} />
