@@ -110,20 +110,20 @@ function toCaseVariant(
   status: string | null | undefined
 ): CaseVariant {
   const st = (status ?? "").toLowerCase();
-  if (st === "forthcoming") return "forthcoming";
+  if (st === "forthcoming" || st === "private_beta") return "forthcoming";
   const sl = (slug ?? "").toLowerCase();
   if (sl.includes("stk") || sl.includes("trade") || sl.includes("commerce")) {
     return "commerce";
   }
-  if (sl.includes("litigate")) return "forthcoming";
   return "justice";
 }
 
 function toCaseDisplayStatus(
   status: string | null | undefined
-): "Live" | "Forthcoming" | "Active" {
+): "Live" | "Forthcoming" | "Active" | "Private Beta" {
   const s = (status ?? "").toLowerCase();
   if (s === "forthcoming") return "Forthcoming";
+  if (s === "private_beta") return "Private Beta";
   if (s === "archived") return "Active";
   return "Live";
 }

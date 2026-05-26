@@ -86,6 +86,17 @@ export default async function ProjectCasePage({ params }: { params: Params }) {
 /* Cover                                                                       */
 /* -------------------------------------------------------------------------- */
 
+function displayStatus(status: string | null): string {
+  if (!status) return "";
+  const s = status.toLowerCase();
+  if (s === "live") return "Live · production";
+  if (s === "active") return "Active · trading";
+  if (s === "private_beta") return "Private beta · cohort";
+  if (s === "forthcoming") return "In development";
+  if (s === "archived") return "Archived";
+  return status;
+}
+
 function Cover({
   title,
   sector,
@@ -144,7 +155,7 @@ function Cover({
           {status && (
             <>
               <span aria-hidden className="text-ochre">—</span>
-              <span className="text-foreground">{status}</span>
+              <span className="text-foreground">{displayStatus(status)}</span>
             </>
           )}
         </div>

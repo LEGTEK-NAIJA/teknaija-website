@@ -145,13 +145,15 @@ function ProjectRow({
   const statusDisplay =
     statusLabel === "live"
       ? "Live · production"
-      : statusLabel === "forthcoming"
-        ? "In development"
-        : statusLabel === "archived"
-          ? "Archived"
-          : statusLabel
-            ? statusLabel
-            : "Active";
+      : statusLabel === "private_beta"
+        ? "Private beta · cohort"
+        : statusLabel === "forthcoming"
+          ? "In development"
+          : statusLabel === "archived"
+            ? "Archived"
+            : statusLabel
+              ? statusLabel
+              : "Active";
 
   // Trim body to a single editorial line preview.
   const preview = summary

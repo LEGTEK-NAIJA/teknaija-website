@@ -15,7 +15,7 @@ export type CaseRowProps = {
   sector: CaseSector;
   title: string;
   scriptSubtitle?: string;
-  status: "Live" | "Forthcoming" | "Active";
+  status: "Live" | "Forthcoming" | "Active" | "Private Beta";
   href: string;
   body: string;
   variant: CaseVariant;
@@ -218,14 +218,24 @@ function CaseImage({
           aria-hidden
           className={`
             inline-block h-1.5 w-1.5 rounded-full
-            ${status === "Live" ? "bg-moss" : status === "Active" ? "bg-ochre" : "bg-terracotta"}
+            ${
+              status === "Live"
+                ? "bg-moss"
+                : status === "Active"
+                  ? "bg-ochre"
+                  : status === "Private Beta"
+                    ? "bg-ochre"
+                    : "bg-terracotta"
+            }
           `}
         />
         {status === "Live"
           ? "Live · production"
           : status === "Active"
             ? "Active · trading"
-            : "In development"}
+            : status === "Private Beta"
+              ? "Private beta · cohort"
+              : "In development"}
       </figcaption>
 
       {/* Bottom-right project signature */}

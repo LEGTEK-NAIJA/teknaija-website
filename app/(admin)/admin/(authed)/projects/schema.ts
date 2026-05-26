@@ -5,6 +5,7 @@ const SLUG_RE = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 export const ProjectStatuses = [
   "live",
   "active",
+  "private_beta",
   "forthcoming",
   "archived",
   "draft",
