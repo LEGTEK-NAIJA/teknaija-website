@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
+import { recordAuditEvent } from "@/lib/admin/audit";
 import { requireAdminSession } from "@/lib/admin/auth";
 import { deletePostImagesServer } from "@/lib/storage/delete-post-images-server";
 import { extractPostImagePaths } from "@/lib/storage/extract-post-image-urls";
@@ -53,21 +54,32 @@ export async function createPostAction(
   }
 
   const supabase = await createSupabaseServerClient();
-  const { error } = await supabase.from("posts").insert({
-    slug: parsed.data.slug,
-    title: parsed.data.title,
-    dek: parsed.data.dek || null,
-    body: parsed.data.body,
-    author_name: parsed.data.author_name || null,
-    status: parsed.data.status,
-    published_at: toPublishedAtIso(parsed.data.published_at),
-    cover_image: toCoverImageUrl(parsed.data.cover_image),
-  });
+  const { data, error } = await supabase
+    .from("posts")
+    .insert({
+      slug: parsed.data.slug,
+      title: parsed.data.title,
+      dek: parsed.data.dek || null,
+      body: parsed.data.body,
+      author_name: parsed.data.author_name || null,
+      status: parsed.data.status,
+      published_at: toPublishedAtIso(parsed.data.published_at),
+      cover_image: toCoverImageUrl(parsed.data.cover_image),
+    })
+    .select("id")
+    .single();
 
   if (error) {
     console.error("[admin/posts.create]", error);
     return { ok: false, error: error.message };
   }
+
+  await recordAuditEvent({
+    action: "create",
+    entity_type: "post",
+    entity_id: data?.id,
+    entity_label: parsed.data.title,
+  });
 
   revalidatePostRoutes(parsed.data.slug);
   redirect("/admin/posts");
@@ -133,6 +145,13 @@ export async function updatePostAction(
     );
   }
 
+  await recordAuditEvent({
+    action: "update",
+    entity_type: "post",
+    entity_id: id,
+    entity_label: parsed.data.title,
+  });
+
   revalidatePostRoutes(parsed.data.slug);
   redirect("/admin/posts");
 }
@@ -144,7 +163,7 @@ export async function deletePostAction(id: string): Promise<ActionResult> {
 
   const { data: existing } = await supabase
     .from("posts")
-    .select("body, cover_image")
+    .select("title, body, cover_image")
     .eq("id", id)
     .single();
 
@@ -165,6 +184,13 @@ export async function deletePostAction(id: string): Promise<ActionResult> {
     console.error("[admin/posts.delete]", { id, error });
     return { ok: false, error: error.message };
   }
+
+  await recordAuditEvent({
+    action: "delete",
+    entity_type: "post",
+    entity_id: id,
+    entity_label: existing?.title ?? null,
+  });
 
   revalidatePostRoutes();
   return { ok: true };

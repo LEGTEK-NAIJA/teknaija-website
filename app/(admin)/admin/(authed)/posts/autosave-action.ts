@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 
+import { recordAuditEvent } from "@/lib/admin/audit";
 import { requireAdminSession } from "@/lib/admin/auth";
 import { deletePostImagesServer } from "@/lib/storage/delete-post-images-server";
 import { extractPostImagePath } from "@/lib/storage/delete-post-image";
@@ -83,6 +84,13 @@ export async function autosaveCreatePostAction(
     return { ok: false, error: error?.message ?? "Insert failed." };
   }
 
+  await recordAuditEvent({
+    action: "autosave_create",
+    entity_type: "post",
+    entity_id: data.id,
+    entity_label: parsed.data.title,
+  });
+
   revalidatePath("/admin/posts");
   revalidatePath("/admin");
   return { ok: true, id: data.id };
@@ -150,6 +158,13 @@ export async function autosaveUpdatePostAction(
     const orphans = [...oldPaths].filter((p) => !newPaths.has(p));
     if (orphans.length) void deletePostImagesServer(orphans);
   }
+
+  await recordAuditEvent({
+    action: "autosave_update",
+    entity_type: "post",
+    entity_id: id,
+    entity_label: parsed.data.title,
+  });
 
   revalidatePath("/admin/posts");
   return { ok: true, id };

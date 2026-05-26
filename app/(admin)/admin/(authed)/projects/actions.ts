@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
+import { recordAuditEvent } from "@/lib/admin/audit";
 import { requireAdminSession } from "@/lib/admin/auth";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
@@ -55,12 +56,23 @@ export async function createProjectAction(
   }
 
   const supabase = await createSupabaseServerClient();
-  const { error } = await supabase.from("projects").insert(projectPayload(parsed.data));
+  const { data, error } = await supabase
+    .from("projects")
+    .insert(projectPayload(parsed.data))
+    .select("id")
+    .single();
 
   if (error) {
     console.error("[admin/projects.create]", error);
     return { ok: false, error: error.message };
   }
+
+  await recordAuditEvent({
+    action: "create",
+    entity_type: "project",
+    entity_id: data?.id,
+    entity_label: parsed.data.title,
+  });
 
   revalidateProjectRoutes();
   redirect("/admin/projects");
@@ -92,6 +104,13 @@ export async function updateProjectAction(
     return { ok: false, error: error.message };
   }
 
+  await recordAuditEvent({
+    action: "update",
+    entity_type: "project",
+    entity_id: id,
+    entity_label: parsed.data.title,
+  });
+
   revalidateProjectRoutes();
   if (parsed.data.slug) revalidatePath(`/work/${parsed.data.slug}`);
   redirect("/admin/projects");
@@ -101,11 +120,25 @@ export async function deleteProjectAction(id: string): Promise<ActionResult> {
   await requireAdminSession();
 
   const supabase = await createSupabaseServerClient();
+
+  const { data: existing } = await supabase
+    .from("projects")
+    .select("title")
+    .eq("id", id)
+    .single();
+
   const { error } = await supabase.from("projects").delete().eq("id", id);
   if (error) {
     console.error("[admin/projects.delete]", { id, error });
     return { ok: false, error: error.message };
   }
+
+  await recordAuditEvent({
+    action: "delete",
+    entity_type: "project",
+    entity_id: id,
+    entity_label: existing?.title ?? null,
+  });
 
   revalidateProjectRoutes();
   return { ok: true };
