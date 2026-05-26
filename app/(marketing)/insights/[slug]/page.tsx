@@ -89,14 +89,31 @@ function PostHeader({
   dek,
   display,
   isoDay,
+  coverImage,
 }: {
   title: string;
   dek: string;
   display: string;
   isoDay: string;
+  coverImage: string | null;
 }) {
   return (
     <header className="pt-24 lg:pt-40 pb-12 lg:pb-20 max-w-[68ch]">
+      {coverImage ? (
+        <div className="mb-10 lg:mb-14 -mx-5 sm:-mx-8 lg:mx-0">
+          <div className="relative aspect-[16/9] w-full overflow-hidden rounded-sm lg:rounded">
+            <Image
+              src={coverImage}
+              alt=""
+              fill
+              priority
+              sizes="(min-width: 1024px) 68ch, 100vw"
+              className="object-cover"
+            />
+          </div>
+        </div>
+      ) : null}
+
       <p className="font-mono text-[0.7rem] tracking-[0.22em] uppercase text-ochre">
         <Link href="/insights" className="hover:text-foreground transition-colors">
           ← Insights
