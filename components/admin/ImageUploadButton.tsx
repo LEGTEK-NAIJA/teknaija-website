@@ -3,6 +3,7 @@
 import { useRef, useState } from "react";
 
 import { SecondaryButton } from "@/lib/admin/ui";
+import { formatBytes, optimizeImage } from "@/lib/storage/optimize-image";
 import { uploadImage } from "@/lib/storage/upload-image";
 
 type Props = {
@@ -12,6 +13,17 @@ type Props = {
   className?: string;
 };
 
+type Status =
+  | { kind: "idle" }
+  | { kind: "optimizing"; originalBytes: number }
+  | {
+      kind: "uploading";
+      originalBytes: number;
+      finalBytes: number;
+      optimized: boolean;
+    }
+  | { kind: "error"; message: string };
+
 export function ImageUploadButton({
   bucket,
   onUploaded,
@@ -19,23 +31,46 @@ export function ImageUploadButton({
   className = "",
 }: Props) {
   const inputRef = useRef<HTMLInputElement>(null);
-  const [busy, setBusy] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [status, setStatus] = useState<Status>({ kind: "idle" });
 
   async function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
     if (!file) return;
-    setError(null);
-    setBusy(true);
-    const result = await uploadImage(file, bucket);
-    setBusy(false);
+
     if (inputRef.current) inputRef.current.value = "";
-    if (!result.ok) {
-      setError(result.error);
+
+    setStatus({ kind: "optimizing", originalBytes: file.size });
+
+    let result;
+    try {
+      result = await optimizeImage(file);
+    } catch (err) {
+      setStatus({
+        kind: "error",
+        message: err instanceof Error ? err.message : "Optimization failed.",
+      });
       return;
     }
-    onUploaded(result.url);
+
+    setStatus({
+      kind: "uploading",
+      originalBytes: result.originalBytes,
+      finalBytes: result.finalBytes,
+      optimized: result.optimized,
+    });
+
+    const uploadResult = await uploadImage(result.file, bucket);
+
+    if (!uploadResult.ok) {
+      setStatus({ kind: "error", message: uploadResult.error });
+      return;
+    }
+
+    setStatus({ kind: "idle" });
+    onUploaded(uploadResult.url);
   }
+
+  const busy = status.kind === "optimizing" || status.kind === "uploading";
 
   return (
     <div className={className}>
@@ -52,9 +87,44 @@ export function ImageUploadButton({
         disabled={busy}
         className="px-3 py-1.5 text-sm"
       >
-        {busy ? "Uploading…" : label}
+        {status.kind === "optimizing"
+          ? "Optimizing…"
+          : status.kind === "uploading"
+            ? "Uploading…"
+            : label}
       </SecondaryButton>
-      {error ? <p className="mt-1 text-xs text-red-600">{error}</p> : null}
+      <StatusLine status={status} />
     </div>
+  );
+}
+
+function StatusLine({ status }: { status: Status }) {
+  if (status.kind === "idle") return null;
+
+  if (status.kind === "error") {
+    return <p className="mt-1 text-xs text-red-600">{status.message}</p>;
+  }
+
+  if (status.kind === "optimizing") {
+    return (
+      <p className="mt-1 text-xs text-slate-500">
+        Optimizing {formatBytes(status.originalBytes)}…
+      </p>
+    );
+  }
+
+  if (status.optimized) {
+    return (
+      <p className="mt-1 text-xs text-slate-500">
+        Optimizing… {formatBytes(status.originalBytes)} →{" "}
+        {formatBytes(status.finalBytes)}. Uploading…
+      </p>
+    );
+  }
+
+  return (
+    <p className="mt-1 text-xs text-slate-500">
+      Uploading {formatBytes(status.finalBytes)}…
+    </p>
   );
 }
