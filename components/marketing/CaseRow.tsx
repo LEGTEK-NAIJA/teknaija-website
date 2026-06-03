@@ -22,6 +22,7 @@ export type CaseRowProps = {
   reverse?: boolean;
   meta?: { label: string; value: string }[];
   stack?: string[];
+  coverImage?: string | null;
 };
 
 /**
@@ -41,6 +42,7 @@ export function CaseRow({
   reverse = false,
   meta,
   stack,
+  coverImage,
 }: CaseRowProps) {
   const projectLabel = `PROJECT ${String(index).padStart(2, "0")} — ${sector}`;
 
@@ -57,7 +59,12 @@ export function CaseRow({
           ${reverse ? "lg:order-2" : "lg:order-1"}
         `}
       >
-        <CaseImage variant={variant} title={title} status={status} />
+        <CaseImage
+          variant={variant}
+          title={title}
+          status={status}
+          coverImage={coverImage ?? null}
+        />
       </div>
 
       <div
@@ -160,17 +167,20 @@ function CaseImage({
   variant,
   title,
   status,
+  coverImage,
 }: {
   variant: CaseVariant;
   title: string;
   status: CaseRowProps["status"];
+  coverImage: string | null;
 }) {
   const shotSrc =
-    variant === "justice"
+    coverImage ||
+    (variant === "justice"
       ? "/LEGTEK_NAIJA_SCREENSHOT.png"
       : variant === "commerce"
         ? "/STK_Screenshot.png"
-        : null;
+        : null);
 
   return (
     <figure

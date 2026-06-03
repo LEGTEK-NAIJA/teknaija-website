@@ -40,6 +40,7 @@ type ProjectRow = {
   body: string | null;
   outcomes?: unknown;
   stack?: unknown;
+  cover_image: string | null;
 };
 
 async function fetchHomepageData() {
@@ -59,7 +60,7 @@ async function fetchHomepageData() {
       .limit(3),
     supabase
       .from("projects")
-      .select("slug, title, sector, status, body, outcomes, stack")
+      .select("slug, title, sector, status, body, outcomes, stack, cover_image")
       .eq("featured", true)
       .order("display_order", { ascending: true }),
   ]);
@@ -531,6 +532,7 @@ function SelectedWork({ projects }: { projects: ProjectRow[] }) {
               body={(project.body ?? "").trim()}
               stack={stackToList(project.stack)}
               meta={outcomesToMeta(project.outcomes)}
+              coverImage={project.cover_image ?? null}
             />
           );
         })}
