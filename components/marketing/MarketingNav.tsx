@@ -124,39 +124,56 @@ export function MarketingNav() {
         className="
           hidden xs:flex lg:hidden
           mx-auto w-full max-w-[1440px]
-          items-baseline justify-start gap-3 xs:gap-4 sm:gap-6
+          items-center justify-between gap-4
           px-3 xs:px-5 sm:px-8 pb-4 pt-1
           border-t border-border-subtle/40
         "
       >
-        {NAV_ITEMS.map((item, i) => (
-          <Link
-            key={item.href}
-            href={item.href}
-            aria-current={isCurrent(pathname, item.href) ? "page" : undefined}
-            className="
-              group relative font-sans text-[0.85rem] tracking-wide
-              text-foreground-muted hover:text-foreground
-              transition-colors flex items-baseline gap-1.5
-            "
-            data-current={isCurrent(pathname, item.href) || undefined}
-          >
-            <span className="font-mono text-[0.6rem] text-foreground-muted/70 tracking-[0.1em]">
-              {String(i + 1).padStart(2, "0")}
-            </span>
-            <span>{item.label}</span>
-            <span
-              aria-hidden
+        <div className="flex items-baseline gap-3 xs:gap-4 sm:gap-6 flex-wrap">
+          {NAV_ITEMS.map((item, i) => (
+            <Link
+              key={item.href}
+              href={item.href}
+              aria-current={isCurrent(pathname, item.href) ? "page" : undefined}
               className="
-                pointer-events-none absolute -bottom-1.5 left-0 h-px
-                w-full origin-left scale-x-0 bg-terracotta
-                transition-transform duration-300 ease-out
-                group-hover:scale-x-100
-                group-data-[current]:scale-x-100 group-data-[current]:bg-ochre
+                group relative font-sans text-[0.85rem] tracking-wide
+                text-foreground-muted hover:text-foreground
+                transition-colors flex items-baseline gap-1.5
+                shrink-0
               "
-            />
-          </Link>
-        ))}
+              data-current={isCurrent(pathname, item.href) || undefined}
+            >
+              <span className="font-mono text-[0.6rem] text-foreground-muted/70 tracking-[0.1em]">
+                {String(i + 1).padStart(2, "0")}
+              </span>
+              <span>{item.label}</span>
+              <span
+                aria-hidden
+                className="
+                  pointer-events-none absolute -bottom-1.5 left-0 h-px
+                  w-full origin-left scale-x-0 bg-terracotta
+                  transition-transform duration-300 ease-out
+                  group-hover:scale-x-100
+                  group-data-[current]:scale-x-100 group-data-[current]:bg-ochre
+                "
+              />
+            </Link>
+          ))}
+        </div>
+
+        <Link
+          href="/contact"
+          className="
+            shrink-0 inline-flex items-center gap-2
+            font-sans text-[0.8rem] tracking-wide text-foreground
+            border border-border-subtle rounded
+            px-3 py-1.5
+            transition-colors hover:border-ochre hover:text-ochre
+          "
+        >
+          <span>Begin a conversation</span>
+          <span aria-hidden>→</span>
+        </Link>
       </nav>
 
       <MobileSheet open={open} pathname={pathname} onClose={() => setOpen(false)} />
