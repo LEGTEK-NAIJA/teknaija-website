@@ -197,13 +197,33 @@ function CaseImage({
             alt=""
             fill
             sizes="(min-width: 1024px) 60vw, 100vw"
-            className="object-cover object-[center_15%]"
+            className="
+              object-cover object-[center_15%]
+              [filter:saturate(0.72)_brightness(0.82)_contrast(1.06)]
+              transition-[filter] duration-700
+              group-hover:[filter:saturate(0.85)_brightness(0.92)_contrast(1.04)]
+            "
             priority={false}
           />
         ) : (
           <ForthcomingArt />
         )}
       </div>
+
+      <div
+        aria-hidden="true"
+        className="
+          pointer-events-none absolute inset-0
+          bg-gradient-to-t from-ink-deep/85 via-ink-deep/35 to-ink-deep/15
+        "
+      />
+      <div
+        aria-hidden="true"
+        className="
+          pointer-events-none absolute inset-0 mix-blend-multiply
+          bg-[radial-gradient(120%_90%_at_50%_0%,transparent_40%,rgba(11,14,26,0.55)_100%)]
+        "
+      />
 
       {/* Top-right Nsibidi corner mark — traces in on hover */}
       <div
