@@ -276,59 +276,86 @@ function MobileSheet({
   pathname: string;
   onClose: () => void;
 }) {
+  useEffect(() => {
+    if (!open) return;
+    const original = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = original;
+    };
+  }, [open]);
+
   return (
-    <div
-      id="marketing-mobile-nav"
-      role="dialog"
-      aria-modal="true"
-      aria-label="Site navigation"
-      data-open={open || undefined}
-      className="
-        lg:hidden fixed inset-x-0 top-[64px] sm:top-[72px] bottom-0 z-30
-        bg-ink-deep
-        opacity-0 pointer-events-none
-        data-[open]:opacity-100 data-[open]:pointer-events-auto
-        transition-opacity duration-200
-      "
-    >
-      <nav
-        aria-label="Mobile primary"
+    <>
+      <button
+        type="button"
+        aria-hidden="true"
+        tabIndex={-1}
+        onClick={onClose}
+        data-open={open || undefined}
         className="
-          flex h-full flex-col justify-between gap-12
-          px-6 pb-12 pt-10 sm:px-10
+          lg:hidden fixed inset-0 top-[64px] sm:top-[72px] z-20
+          bg-ink/80 backdrop-blur-sm
+          opacity-0 pointer-events-none
+          data-[open]:opacity-100 data-[open]:pointer-events-auto
+          transition-opacity duration-200
+        "
+      />
+
+      <div
+        id="marketing-mobile-nav"
+        role="dialog"
+        aria-modal="true"
+        aria-label="Site navigation"
+        data-open={open || undefined}
+        className="
+          lg:hidden fixed inset-x-0 top-[64px] sm:top-[72px] bottom-0 z-30
+          bg-background
+          -translate-y-2 opacity-0 pointer-events-none
+          data-[open]:translate-y-0 data-[open]:opacity-100 data-[open]:pointer-events-auto
+          transition-[transform,opacity] duration-200
         "
       >
-        <ul className="flex flex-col gap-6">
-          {NAV_ITEMS.map((item, i) => (
-            <li key={item.href}>
-              <Link
-                href={item.href}
-                aria-current={isCurrent(pathname, item.href) ? "page" : undefined}
-                onClick={onClose}
-                className="
-                  block font-serif text-[2rem] sm:text-[2.4rem] leading-none
-                  text-foreground hover:text-terracotta transition-colors
-                  aria-[current=page]:text-ochre
-                "
-              >
-                <span className="font-mono text-foreground-muted text-[0.7rem] mr-3 align-middle">
-                  {String(i + 1).padStart(2, "0")}
-                </span>
-                {item.label}
-              </Link>
-            </li>
-          ))}
-        </ul>
+        <nav
+          aria-label="Mobile primary"
+          className="
+            flex h-full flex-col justify-between gap-12
+            px-6 pb-12 pt-10 sm:px-10
+            overflow-y-auto
+          "
+        >
+          <ul className="flex flex-col gap-6">
+            {NAV_ITEMS.map((item, i) => (
+              <li key={item.href}>
+                <Link
+                  href={item.href}
+                  aria-current={isCurrent(pathname, item.href) ? "page" : undefined}
+                  onClick={onClose}
+                  className="
+                    block font-serif text-[2rem] sm:text-[2.4rem] leading-none
+                    text-foreground hover:text-terracotta transition-colors
+                    aria-[current=page]:text-ochre
+                  "
+                >
+                  <span className="font-mono text-foreground-muted text-[0.7rem] mr-3 align-middle">
+                    {String(i + 1).padStart(2, "0")}
+                  </span>
+                  {item.label}
+                </Link>
+              </li>
+            ))}
+          </ul>
 
-        <div className="border-t border-border-subtle pt-8">
-          <BeginConversation className="text-base" />
-          <p className="mt-6 font-mono text-xs text-foreground-muted leading-relaxed">
-            5 Bauchi Link Street, Apapa
-            <br />
-            Lagos, Nigeria
-          </p>
-        </div>
-      </nav>
-    </div>
+          <div className="border-t border-border-subtle pt-8">
+            <BeginConversation className="text-base" />
+            <p className="mt-6 font-mono text-xs text-foreground-muted leading-relaxed">
+              5 Bauchi Link Street, Apapa
+              <br />
+              Lagos, Nigeria
+            </p>
+          </div>
+        </nav>
+      </div>
+    </>
   );
 }
