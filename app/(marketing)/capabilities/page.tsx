@@ -3,7 +3,7 @@ import Link from "next/link";
 import { HeritageImage } from "@/components/marketing/HeritageImage";
 
 export const metadata: Metadata = {
-  title: "Capabilities — TEK NAIJA",
+  title: "Capabilities",
   description:
     "Four practices, one standard. Justice & regulatory technology, commerce & trade platforms, institutional software, and applied AI infrastructure.",
 };

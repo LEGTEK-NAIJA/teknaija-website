@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { HeritageImage } from "@/components/marketing/HeritageImage";
 
 export const metadata: Metadata = {
-  title: "Contact — TEK NAIJA",
+  title: "Contact",
   description:
     "Tell us what you are building. Email hello@teknaija.ng or message +234 803 044 0935. Office in Apapa, Lagos.",
 };

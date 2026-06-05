@@ -5,7 +5,7 @@ import { fetchPublishedPosts } from "@/lib/content/queries";
 import { formatPublishDate } from "@/lib/content/format";
 
 export const metadata: Metadata = {
-  title: "Insights — TEK NAIJA",
+  title: "Insights",
   description:
     "Notes from the desk: writing on Nigerian dispute resolution, sovereign software, and the slow internet — by the team at TEK NAIJA.",
 };

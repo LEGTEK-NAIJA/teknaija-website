@@ -6,7 +6,7 @@ import { fetchTeam } from "@/lib/content/queries";
 import type { TeamMemberRow } from "@/lib/content/types";
 
 export const metadata: Metadata = {
-  title: "About — TEK NAIJA",
+  title: "About",
   description:
     "TEK NAIJA LTD (RC 9181824) — a Lagos-headquartered technology firm. We hold a portfolio of owned software (LEGTEK NAIJA, LITIGATEIQ) and build software for the Nigerian institutions that need it built — courts, exporters, chambers.",
 };

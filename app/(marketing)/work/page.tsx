@@ -6,7 +6,7 @@ import { fetchAllProjects } from "@/lib/content/queries";
 import { projectIndexLabel } from "@/lib/content/format";
 
 export const metadata: Metadata = {
-  title: "Work — TEK NAIJA",
+  title: "Work",
   description:
     "Selected engagements from TEK NAIJA: a small portfolio, deliberately so. Each entry is a system in production or in build.",
 };
