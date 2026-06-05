@@ -109,7 +109,7 @@ export function MarketingNav() {
           aria-controls="marketing-mobile-nav"
           onClick={() => setOpen((v) => !v)}
           className="
-            sm:hidden inline-flex h-10 w-10 items-center justify-center
+            xs:hidden inline-flex h-10 w-10 items-center justify-center
             rounded border border-border-subtle text-foreground
             transition-colors hover:border-ochre
           "
@@ -122,10 +122,10 @@ export function MarketingNav() {
       <nav
         aria-label="Primary, inline"
         className="
-          hidden sm:flex lg:hidden
+          hidden xs:flex lg:hidden
           mx-auto w-full max-w-[1440px]
-          items-baseline justify-start gap-6
-          px-5 sm:px-8 pb-4 pt-1
+          items-baseline justify-start gap-3 xs:gap-4 sm:gap-6
+          px-3 xs:px-5 sm:px-8 pb-4 pt-1
           border-t border-border-subtle/40
         "
       >
@@ -334,8 +334,8 @@ function MobileSheet({
         onClick={onClose}
         data-open={open || undefined}
         className="
-          sm:hidden fixed inset-0 top-[64px] sm:top-[72px] z-20
-          bg-ink/70 backdrop-blur-sm
+          xs:hidden fixed inset-0 top-0 z-[60]
+          bg-black/60 backdrop-blur-sm
           opacity-0 pointer-events-none
           data-[open]:opacity-100 data-[open]:pointer-events-auto
           transition-opacity duration-200
@@ -348,26 +348,45 @@ function MobileSheet({
         aria-modal="true"
         aria-label="Site navigation"
         data-open={open || undefined}
+        style={{ backgroundColor: "#060814" }}
         className="
-          sm:hidden fixed top-[64px] sm:top-[72px] bottom-0 right-0 z-30
-          w-[85%] max-w-sm
-          bg-background
-          border-l border-border-subtle
+          xs:hidden fixed top-0 right-0 z-[70]
+          h-[100dvh] w-[85%] max-w-sm
+          border-l border-ochre/30
+          shadow-2xl
           translate-x-full pointer-events-none
           data-[open]:translate-x-0 data-[open]:pointer-events-auto
           transition-transform duration-300 ease-out
-          shadow-2xl
+          flex flex-col
         "
       >
+        <div className="flex justify-end px-5 pt-4 shrink-0">
+          <button
+            type="button"
+            onClick={onClose}
+            aria-label="Close menu"
+            className="
+              inline-flex h-9 w-9 items-center justify-center
+              rounded border border-ochre/40 text-foreground
+              transition-colors hover:border-ochre
+            "
+          >
+            <svg width="16" height="16" viewBox="0 0 20 20" aria-hidden>
+              <line x1="5" y1="5" x2="15" y2="15" stroke="currentColor" strokeWidth="1.5" />
+              <line x1="15" y1="5" x2="5" y2="15" stroke="currentColor" strokeWidth="1.5" />
+            </svg>
+          </button>
+        </div>
+
         <nav
           aria-label="Mobile primary"
           className="
-            flex h-full flex-col justify-between gap-12
-            px-6 pb-12 pt-10 sm:px-8
-            overflow-y-auto
+            flex-1 min-h-0 overflow-y-auto
+            flex flex-col justify-between gap-10
+            px-6 pb-10 pt-6
           "
         >
-          <ul className="flex flex-col gap-6">
+          <ul className="flex flex-col gap-5">
             {NAV_ITEMS.map((item, i) => (
               <li key={item.href}>
                 <Link
@@ -375,7 +394,7 @@ function MobileSheet({
                   aria-current={isCurrent(pathname, item.href) ? "page" : undefined}
                   onClick={onClose}
                   className="
-                    block font-serif text-[1.75rem] sm:text-[2rem] leading-tight
+                    block font-serif text-[1.75rem] leading-tight
                     text-foreground hover:text-terracotta transition-colors
                     aria-[current=page]:text-ochre
                   "
@@ -389,9 +408,9 @@ function MobileSheet({
             ))}
           </ul>
 
-          <div className="border-t border-border-subtle pt-8">
+          <div className="border-t border-border-subtle pt-6 shrink-0">
             <BeginConversation className="text-base" />
-            <p className="mt-6 font-mono text-xs text-foreground-muted leading-relaxed">
+            <p className="mt-5 font-mono text-xs text-foreground-muted leading-relaxed">
               5 Bauchi Link Street, Apapa
               <br />
               Lagos, Nigeria
