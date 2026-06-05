@@ -86,8 +86,8 @@ function IdentityColumn() {
           alt="TEK NAIJA"
           width={400}
           height={400}
-          sizes="160px"
-          className="h-[72px] w-auto object-contain"
+          sizes="120px"
+          className="h-[48px] w-auto object-contain opacity-75 hover:opacity-100 transition-opacity"
         />
       </Link>
 

@@ -198,8 +198,8 @@ function Wordmark() {
         width={200}
         height={200}
         priority
-        sizes="44px"
-        className="h-[26px] sm:h-[30px] w-auto object-contain"
+        sizes="40px"
+        className="h-[22px] sm:h-[26px] w-auto object-contain opacity-80 group-hover:opacity-100 transition-opacity"
       />
       <span
         aria-label="Registration number"
