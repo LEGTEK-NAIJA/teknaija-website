@@ -413,7 +413,7 @@ function FooterCTA() {
             leading-[1.4] text-foreground max-w-[40ch]
           "
         >
-          “We build for the next century, not the next quarter.”
+          “We build from Nigerian reality outward — not from a foreign template inward.”
           <span className="block mt-3 not-italic font-mono text-[0.7rem] tracking-[0.18em] uppercase text-foreground-muted">
             Sanctus Ojonimi Ejeh
             <span aria-hidden className="mx-2 text-ochre">/</span>
