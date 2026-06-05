@@ -99,7 +99,7 @@ const organizationLd = {
   legalName: "TEK NAIJA LTD",
   alternateName: "TEK NAIJA",
   url: SITE_URL,
-  logo: `${SITE_URL}/tek-naija-logo-clean.png`,
+  logo: `${SITE_URL}/legtek-naija-emblem.png`,
   foundingDate: "2026-01-08",
   identifier: "RC 9181824",
   description:

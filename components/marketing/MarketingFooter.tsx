@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 
 const NAV_ITEMS = [
@@ -80,16 +81,14 @@ function IdentityColumn() {
         aria-label="TEK NAIJA — home"
         className="inline-flex w-fit"
       >
-        <span
-          className="
-            font-serif font-optical-display
-            text-[2rem] leading-none tracking-[-0.01em]
-            text-foreground
-          "
-          style={{ fontVariationSettings: '"opsz" 72' } as React.CSSProperties}
-        >
-          TEK NAIJA
-        </span>
+        <Image
+          src="/legtek-naija-emblem.png"
+          alt="TEK NAIJA"
+          width={400}
+          height={400}
+          sizes="160px"
+          className="h-[72px] w-auto object-contain"
+        />
       </Link>
 
       <p className="font-mono text-[0.72rem] tracking-[0.12em] uppercase text-foreground-muted">

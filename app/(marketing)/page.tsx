@@ -287,16 +287,15 @@ function Hero() {
             "
           >
             <Image
-              src="/tek-naija-logo-clean.png"
-              alt="TEK NAIJA LTD"
-              width={1600}
-              height={400}
+              src="/legtek-naija-emblem.png"
+              alt="TEK NAIJA"
+              width={600}
+              height={600}
               className="
-                block h-[clamp(176px,32vw,400px)] w-auto max-w-full
+                block h-[clamp(120px,18vw,220px)] w-auto max-w-full
                 object-contain object-left
-                mix-blend-screen
               "
-              sizes="(min-width: 1536px) 1420px, (min-width: 1024px) 94vw, 98vw"
+              sizes="(min-width: 1024px) 220px, 40vw"
               priority
             />
           </Link>
