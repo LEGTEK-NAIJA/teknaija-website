@@ -109,7 +109,7 @@ export function MarketingNav() {
           aria-controls="marketing-mobile-nav"
           onClick={() => setOpen((v) => !v)}
           className="
-            lg:hidden inline-flex h-10 w-10 items-center justify-center
+            sm:hidden inline-flex h-10 w-10 items-center justify-center
             rounded border border-border-subtle text-foreground
             transition-colors hover:border-ochre
           "
@@ -118,6 +118,46 @@ export function MarketingNav() {
           <MenuGlyph open={open} />
         </button>
       </div>
+
+      <nav
+        aria-label="Primary, inline"
+        className="
+          hidden sm:flex lg:hidden
+          mx-auto w-full max-w-[1440px]
+          items-baseline justify-start gap-6
+          px-5 sm:px-8 pb-4 pt-1
+          border-t border-border-subtle/40
+        "
+      >
+        {NAV_ITEMS.map((item, i) => (
+          <Link
+            key={item.href}
+            href={item.href}
+            aria-current={isCurrent(pathname, item.href) ? "page" : undefined}
+            className="
+              group relative font-sans text-[0.85rem] tracking-wide
+              text-foreground-muted hover:text-foreground
+              transition-colors flex items-baseline gap-1.5
+            "
+            data-current={isCurrent(pathname, item.href) || undefined}
+          >
+            <span className="font-mono text-[0.6rem] text-foreground-muted/70 tracking-[0.1em]">
+              {String(i + 1).padStart(2, "0")}
+            </span>
+            <span>{item.label}</span>
+            <span
+              aria-hidden
+              className="
+                pointer-events-none absolute -bottom-1.5 left-0 h-px
+                w-full origin-left scale-x-0 bg-terracotta
+                transition-transform duration-300 ease-out
+                group-hover:scale-x-100
+                group-data-[current]:scale-x-100 group-data-[current]:bg-ochre
+              "
+            />
+          </Link>
+        ))}
+      </nav>
 
       <MobileSheet open={open} pathname={pathname} onClose={() => setOpen(false)} />
     </header>
@@ -294,7 +334,7 @@ function MobileSheet({
         onClick={onClose}
         data-open={open || undefined}
         className="
-          lg:hidden fixed inset-0 top-[64px] sm:top-[72px] z-20
+          sm:hidden fixed inset-0 top-[64px] sm:top-[72px] z-20
           bg-ink/70 backdrop-blur-sm
           opacity-0 pointer-events-none
           data-[open]:opacity-100 data-[open]:pointer-events-auto
@@ -309,7 +349,7 @@ function MobileSheet({
         aria-label="Site navigation"
         data-open={open || undefined}
         className="
-          lg:hidden fixed top-[64px] sm:top-[72px] bottom-0 right-0 z-30
+          sm:hidden fixed top-[64px] sm:top-[72px] bottom-0 right-0 z-30
           w-[85%] max-w-sm
           bg-background
           border-l border-border-subtle
