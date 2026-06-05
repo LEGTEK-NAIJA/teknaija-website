@@ -292,10 +292,10 @@ function Hero() {
               width={600}
               height={600}
               className="
-                block h-[clamp(80px,11vw,132px)] w-auto max-w-full
+                block h-[clamp(120px,18vw,220px)] w-auto max-w-full
                 object-contain object-left
               "
-              sizes="(min-width: 1024px) 132px, 28vw"
+              sizes="(min-width: 1024px) 220px, 40vw"
               priority
             />
           </Link>
