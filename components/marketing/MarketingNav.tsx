@@ -295,7 +295,7 @@ function MobileSheet({
         data-open={open || undefined}
         className="
           lg:hidden fixed inset-0 top-[64px] sm:top-[72px] z-20
-          bg-ink/80 backdrop-blur-sm
+          bg-ink/70 backdrop-blur-sm
           opacity-0 pointer-events-none
           data-[open]:opacity-100 data-[open]:pointer-events-auto
           transition-opacity duration-200
@@ -309,18 +309,21 @@ function MobileSheet({
         aria-label="Site navigation"
         data-open={open || undefined}
         className="
-          lg:hidden fixed inset-x-0 top-[64px] sm:top-[72px] bottom-0 z-30
+          lg:hidden fixed top-[64px] sm:top-[72px] bottom-0 right-0 z-30
+          w-[85%] max-w-sm
           bg-background
-          -translate-y-2 opacity-0 pointer-events-none
-          data-[open]:translate-y-0 data-[open]:opacity-100 data-[open]:pointer-events-auto
-          transition-[transform,opacity] duration-200
+          border-l border-border-subtle
+          translate-x-full pointer-events-none
+          data-[open]:translate-x-0 data-[open]:pointer-events-auto
+          transition-transform duration-300 ease-out
+          shadow-2xl
         "
       >
         <nav
           aria-label="Mobile primary"
           className="
             flex h-full flex-col justify-between gap-12
-            px-6 pb-12 pt-10 sm:px-10
+            px-6 pb-12 pt-10 sm:px-8
             overflow-y-auto
           "
         >
@@ -332,12 +335,12 @@ function MobileSheet({
                   aria-current={isCurrent(pathname, item.href) ? "page" : undefined}
                   onClick={onClose}
                   className="
-                    block font-serif text-[2rem] sm:text-[2.4rem] leading-none
+                    block font-serif text-[1.75rem] sm:text-[2rem] leading-tight
                     text-foreground hover:text-terracotta transition-colors
                     aria-[current=page]:text-ochre
                   "
                 >
-                  <span className="font-mono text-foreground-muted text-[0.7rem] mr-3 align-middle">
+                  <span className="font-mono text-foreground-muted text-[0.65rem] mr-3 align-middle">
                     {String(i + 1).padStart(2, "0")}
                   </span>
                   {item.label}
