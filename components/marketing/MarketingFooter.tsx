@@ -1,4 +1,3 @@
-import Image from "next/image";
 import Link from "next/link";
 
 const NAV_ITEMS = [
@@ -79,23 +78,15 @@ function IdentityColumn() {
       <Link
         href="/"
         aria-label="TEK NAIJA — home"
-        className="inline-flex flex-col gap-3 w-fit"
+        className="inline-flex w-fit"
       >
-        <Image
-          src="/tek-naija-logo-clean.png"
-          alt=""
-          width={336}
-          height={56}
-          className="h-[56px] w-auto object-contain mix-blend-screen"
-          sizes="336px"
-          priority={false}
-        />
         <span
           className="
-            font-serif text-[1.4rem] uppercase tracking-[0.18em]
+            font-serif font-optical-display
+            text-[2rem] leading-none tracking-[-0.01em]
             text-foreground
           "
-          style={{ fontVariantCaps: "all-small-caps" }}
+          style={{ fontVariationSettings: '"opsz" 72' } as React.CSSProperties}
         >
           TEK NAIJA
         </span>

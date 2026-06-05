@@ -96,43 +96,45 @@ export function TestimonialCarousel({ items }: { items: Testimonial[] }) {
         </figcaption>
       </div>
 
-      <div
-        className="
-          mt-12 flex items-center justify-between gap-6
-          lg:absolute lg:bottom-0 lg:right-0 lg:mt-0 lg:justify-end
-        "
-      >
-        <p
+      {items.length > 1 && (
+        <div
           className="
-            font-mono text-[0.65rem] tracking-[0.2em] uppercase text-foreground-muted
-            lg:hidden
+            mt-12 flex items-center justify-between gap-6
+            lg:absolute lg:bottom-0 lg:right-0 lg:mt-0 lg:justify-end
           "
         >
-          {String(index + 1).padStart(2, "0")} / {String(items.length).padStart(2, "0")}
-        </p>
-
-        <div className="flex items-center gap-3">
           <p
             className="
-              hidden lg:block
               font-mono text-[0.65rem] tracking-[0.2em] uppercase text-foreground-muted
-              mr-4
+              lg:hidden
             "
           >
             {String(index + 1).padStart(2, "0")} / {String(items.length).padStart(2, "0")}
           </p>
 
-          <CarouselButton
-            label="Previous voice"
-            onClick={() => goTo(index - 1)}
-          >
-            ←
-          </CarouselButton>
-          <CarouselButton label="Next voice" onClick={() => goTo(index + 1)}>
-            →
-          </CarouselButton>
+          <div className="flex items-center gap-3">
+            <p
+              className="
+                hidden lg:block
+                font-mono text-[0.65rem] tracking-[0.2em] uppercase text-foreground-muted
+                mr-4
+              "
+            >
+              {String(index + 1).padStart(2, "0")} / {String(items.length).padStart(2, "0")}
+            </p>
+
+            <CarouselButton
+              label="Previous voice"
+              onClick={() => goTo(index - 1)}
+            >
+              ←
+            </CarouselButton>
+            <CarouselButton label="Next voice" onClick={() => goTo(index + 1)}>
+              →
+            </CarouselButton>
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }

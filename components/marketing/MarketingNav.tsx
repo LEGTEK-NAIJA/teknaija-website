@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -187,29 +186,27 @@ function Wordmark() {
       href="/"
       aria-label="TEK NAIJA — home"
       className="
-        group inline-flex items-center gap-4 sm:gap-5
+        group inline-flex items-baseline gap-3 sm:gap-4
         whitespace-nowrap focus-visible:outline-none
         py-0.5 pr-1 sm:pr-2
       "
     >
-      <Image
-        src="/tek-naija-logo-clean.png"
-        alt=""
-        width={480}
-        height={44}
+      <span
         className="
-          h-[36px] sm:h-[44px] w-auto object-contain
-          shrink-0 mix-blend-screen
-          transition-opacity group-hover:opacity-95
+          font-serif font-optical-display
+          text-[1.5rem] sm:text-[1.75rem] leading-none
+          tracking-[-0.01em] text-foreground
+          transition-opacity group-hover:opacity-90
         "
-        sizes="200px"
-        priority
-      />
+        style={{ fontVariationSettings: '"opsz" 40' } as React.CSSProperties}
+      >
+        TEK NAIJA
+      </span>
       <span
         aria-label="Registration number"
         className="
           hidden xs:inline font-mono text-foreground-muted
-          text-[0.7em] tracking-[0.12em] uppercase leading-none
+          text-[0.7rem] tracking-[0.12em] uppercase leading-none
         "
       >
         {RC_NUMBER}
