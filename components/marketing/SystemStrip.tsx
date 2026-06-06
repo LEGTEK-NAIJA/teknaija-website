@@ -97,7 +97,7 @@ function Dot({ status }: { status: "operational" | "preview" | "degraded" }) {
       ? "bg-status-ok"
       : status === "preview"
         ? "bg-status-warn"
-        : "bg-status-down";
+        : "bg-status-warn";
   return (
     <span className="relative inline-flex items-center" aria-label={status}>
       <span className={`relative inline-block h-1.5 w-1.5 rounded-full ${color}`}>
