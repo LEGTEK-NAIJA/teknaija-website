@@ -4,6 +4,8 @@ import { HeritageImage } from "@/components/marketing/HeritageImage";
 import { fetchPublishedPosts } from "@/lib/content/queries";
 import { formatPublishDate } from "@/lib/content/format";
 
+export const revalidate = 3600;
+
 export const metadata: Metadata = {
   title: "Insights",
   description:

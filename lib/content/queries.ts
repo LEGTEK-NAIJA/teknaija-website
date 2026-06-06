@@ -1,7 +1,4 @@
-import {
-  createSupabaseAnonClient,
-  createSupabaseServerClient,
-} from "@/lib/supabase/server";
+import { createSupabaseAnonClient } from "@/lib/supabase/server";
 import type { PostRow, ProjectRow, TeamMemberRow } from "./types";
 
 /* -------------------------------------------------------------------------- */
@@ -12,7 +9,7 @@ const PROJECT_COLUMNS =
   "slug, title, sector, status, body, cover_image, gallery_images, stack, outcomes, featured, display_order";
 
 export async function fetchAllProjects(): Promise<ProjectRow[]> {
-  const supabase = await createSupabaseServerClient();
+  const supabase = createSupabaseAnonClient();
   const { data, error } = await supabase
     .from("projects")
     .select(PROJECT_COLUMNS)
@@ -28,7 +25,7 @@ export async function fetchAllProjects(): Promise<ProjectRow[]> {
 export async function fetchProjectBySlug(
   slug: string
 ): Promise<ProjectRow | null> {
-  const supabase = await createSupabaseServerClient();
+  const supabase = createSupabaseAnonClient();
   const { data, error } = await supabase
     .from("projects")
     .select(PROJECT_COLUMNS)
@@ -65,7 +62,7 @@ const POST_COLUMNS =
   "slug, title, dek, body, cover_image, published_at, status";
 
 export async function fetchPublishedPosts(): Promise<PostRow[]> {
-  const supabase = await createSupabaseServerClient();
+  const supabase = createSupabaseAnonClient();
   const { data, error } = await supabase
     .from("posts")
     .select(POST_COLUMNS)
@@ -80,7 +77,7 @@ export async function fetchPublishedPosts(): Promise<PostRow[]> {
 }
 
 export async function fetchPostBySlug(slug: string): Promise<PostRow | null> {
-  const supabase = await createSupabaseServerClient();
+  const supabase = createSupabaseAnonClient();
   const { data, error } = await supabase
     .from("posts")
     .select(POST_COLUMNS)
@@ -117,7 +114,7 @@ export async function fetchPostSlugs(): Promise<string[]> {
 /* -------------------------------------------------------------------------- */
 
 export async function fetchTeam(): Promise<TeamMemberRow[]> {
-  const supabase = await createSupabaseServerClient();
+  const supabase = createSupabaseAnonClient();
   const { data, error } = await supabase
     .from("team_members")
     .select("name, role, bio, headshot, display_order, active")

@@ -11,6 +11,8 @@ import {
 } from "@/lib/content/queries";
 import { asLabelValueList } from "@/lib/content/format";
 
+export const revalidate = 3600;
+
 type Params = Promise<{ slug: string }>;
 
 export async function generateStaticParams() {

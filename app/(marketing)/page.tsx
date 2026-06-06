@@ -12,7 +12,9 @@ import {
   TestimonialCarousel,
   type Testimonial,
 } from "@/components/marketing/TestimonialCarousel";
-import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { createSupabaseAnonClient } from "@/lib/supabase/server";
+
+export const revalidate = 3600;
 
 /* -------------------------------------------------------------------------- */
 /* Supabase row shapes (minimal — matches CLAUDE.md CMS tables).              */
@@ -44,7 +46,7 @@ type ProjectRow = {
 };
 
 async function fetchHomepageData() {
-  const supabase = await createSupabaseServerClient();
+  const supabase = createSupabaseAnonClient();
 
   const [testimonialsRes, postsRes, projectsRes] = await Promise.all([
     supabase

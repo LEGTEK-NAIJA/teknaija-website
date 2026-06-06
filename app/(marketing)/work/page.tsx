@@ -5,6 +5,8 @@ import { HeritageImage } from "@/components/marketing/HeritageImage";
 import { fetchAllProjects } from "@/lib/content/queries";
 import { projectIndexLabel } from "@/lib/content/format";
 
+export const revalidate = 3600;
+
 export const metadata: Metadata = {
   title: "Work",
   description:

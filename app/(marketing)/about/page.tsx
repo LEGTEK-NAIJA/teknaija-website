@@ -5,6 +5,8 @@ import { HeritageImage } from "@/components/marketing/HeritageImage";
 import { fetchTeam } from "@/lib/content/queries";
 import type { TeamMemberRow } from "@/lib/content/types";
 
+export const revalidate = 3600;
+
 export const metadata: Metadata = {
   title: "About",
   description:
