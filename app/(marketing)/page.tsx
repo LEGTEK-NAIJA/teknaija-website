@@ -668,28 +668,28 @@ const PRACTICES = [
     href: "/capabilities#justice",
     title: "Justice & Regulatory Technology",
     blurb:
-      "Procedural systems, hearing-room infrastructure, and the workflow software that the practice of law in a federal jurisdiction quietly depends on.",
+      "A serious legal system deserves serious software. We build the procedural systems, hearing-room infrastructure, and case workflow the practice of law in a federal jurisdiction quietly runs on.",
   },
   {
     roman: "II",
     href: "/capabilities#commerce",
     title: "Commerce & Trade Platforms",
     blurb:
-      "Marketplaces, B2B trade rails, and export-grade operational tooling — built for Nigerian commercial reality and the standards of foreign customs.",
+      "Trade software that respects two facts at once: how Nigerian commerce actually moves, and what foreign customs actually require — marketplaces, B2B rails, and export-grade tooling that hold at both ends.",
   },
   {
     roman: "III",
     href: "/capabilities#workflow",
     title: "Institutional Software & Workflow Systems",
     blurb:
-      "Internal platforms for ministries, regulators, holding companies, and any institution that has outgrown its spreadsheets and not yet found its replacement.",
+      "Most institutions of consequence still run on spreadsheets and goodwill. We build the internal platforms — for ministries, regulators, holding companies — for when that stops being enough.",
   },
   {
     roman: "IV",
     href: "/capabilities#ai",
     title: "Applied AI & Data Infrastructure",
     blurb:
-      "Retrieval, transcription, document understanding, and the unglamorous data plumbing that makes any of it actually work in production.",
+      "AI is a strategy question before it is a model question. Retrieval, transcription, document understanding, and the unglamorous data plumbing that makes any of it work in production.",
   },
 ] as const;
 
