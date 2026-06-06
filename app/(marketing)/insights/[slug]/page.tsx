@@ -10,6 +10,7 @@ import {
   fetchPublishedPosts,
 } from "@/lib/content/queries";
 import { formatPublishDate } from "@/lib/content/format";
+import { SITE_URL } from "@/lib/site";
 
 export const revalidate = 3600;
 
@@ -38,7 +39,7 @@ export async function generateMetadata({
       description: post.dek ?? undefined,
       images: [
         {
-          url: `https://teknaija.legtek.ng/api/og?title=${encodeURIComponent(post.title ?? "TEK NAIJA")}&eyebrow=${encodeURIComponent("INSIGHTS · TEK NAIJA")}&subtitle=${encodeURIComponent(post.dek ?? "")}`,
+          url: `${SITE_URL}/api/og?title=${encodeURIComponent(post.title ?? "TEK NAIJA")}&eyebrow=${encodeURIComponent("INSIGHTS · TEK NAIJA")}&subtitle=${encodeURIComponent(post.dek ?? "")}`,
           width: 1200,
           height: 630,
           alt: post.title ?? "TEK NAIJA insight",

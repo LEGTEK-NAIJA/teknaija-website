@@ -10,6 +10,7 @@ import {
   fetchProjectSlugs,
 } from "@/lib/content/queries";
 import { asLabelValueList } from "@/lib/content/format";
+import { SITE_URL } from "@/lib/site";
 
 export const revalidate = 3600;
 
@@ -44,7 +45,7 @@ export async function generateMetadata({
       description,
       images: [
         {
-          url: `https://teknaija.legtek.ng/api/og?title=${encodeURIComponent(project.title ?? "TEK NAIJA")}&eyebrow=${encodeURIComponent("WORK · TEK NAIJA")}&subtitle=${encodeURIComponent(description ?? "")}`,
+          url: `${SITE_URL}/api/og?title=${encodeURIComponent(project.title ?? "TEK NAIJA")}&eyebrow=${encodeURIComponent("WORK · TEK NAIJA")}&subtitle=${encodeURIComponent(description ?? "")}`,
           width: 1200,
           height: 630,
           alt: project.title ?? "TEK NAIJA case study",

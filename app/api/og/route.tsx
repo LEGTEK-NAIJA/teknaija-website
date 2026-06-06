@@ -1,8 +1,8 @@
 import { ImageResponse } from "next/og";
 
-export const runtime = "edge";
+import { SITE_HOST } from "@/lib/site";
 
-const SITE_URL = "https://teknaija.legtek.ng";
+export const runtime = "edge";
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
@@ -118,7 +118,7 @@ export async function GET(request: Request) {
             TEK NAIJA
           </div>
           <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
-            <span>teknaija.legtek.ng</span>
+            <span>{SITE_HOST}</span>
             <span
               style={{
                 display: "inline-block",

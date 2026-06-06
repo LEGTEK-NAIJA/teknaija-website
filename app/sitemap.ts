@@ -1,7 +1,9 @@
 import type { MetadataRoute } from "next";
 import { createClient } from "@supabase/supabase-js";
 
-const SITE = "https://teknaija.legtek.ng";
+import { SITE_URL } from "@/lib/site";
+
+const SITE = SITE_URL;
 
 // Static marketing routes
 const staticRoutes: MetadataRoute.Sitemap = [

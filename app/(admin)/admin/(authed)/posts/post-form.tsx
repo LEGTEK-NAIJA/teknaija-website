@@ -6,6 +6,7 @@ import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import { AutosaveDot } from "@/components/admin/AutosaveDot";
+import { SITE_HOST } from "@/lib/site";
 import { ImageUploadButton } from "@/components/admin/ImageUploadButton";
 import { MarkdownToolbar } from "@/components/admin/MarkdownToolbar";
 import { MarkdownField } from "@/lib/admin/MarkdownField";
@@ -293,7 +294,7 @@ export function PostForm(props: Props) {
                 id="cover_image"
                 type="url"
                 className={`${inputClass} font-mono`}
-                placeholder="https://teknaija.legtek.ng/insights/cover-image.jpg"
+                placeholder={`https://${SITE_HOST}/insights/cover-image.jpg`}
                 aria-invalid={Boolean(errors.cover_image)}
                 {...register("cover_image")}
               />

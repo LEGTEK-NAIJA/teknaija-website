@@ -3,6 +3,7 @@ import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { SystemRow, type SystemMetric } from "@/components/marketing/SystemRow";
 import { IncidentLog, type Incident } from "@/components/marketing/IncidentLog";
 import { UptimeLegend } from "@/components/marketing/UptimeLegend";
+import { SITE_URL } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "Status",
@@ -10,7 +11,7 @@ export const metadata: Metadata = {
   openGraph: {
     images: [
       {
-        url: `https://teknaija.legtek.ng/api/og?title=${encodeURIComponent("Live infrastructure status.")}&eyebrow=${encodeURIComponent("STATUS")}&subtitle=${encodeURIComponent("Real-time visibility into every TEK NAIJA system in production.")}`,
+        url: `${SITE_URL}/api/og?title=${encodeURIComponent("Live infrastructure status.")}&eyebrow=${encodeURIComponent("STATUS")}&subtitle=${encodeURIComponent("Real-time visibility into every TEK NAIJA system in production.")}`,
         width: 1200,
         height: 630,
         alt: "TEK NAIJA — Live infrastructure status",
