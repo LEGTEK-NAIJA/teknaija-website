@@ -111,7 +111,7 @@ export function MarketingNav() {
           className="
             xs:hidden inline-flex h-10 w-10 items-center justify-center
             rounded border border-border-subtle text-foreground
-            transition-colors hover:border-ochre
+            transition-colors hover:border-terracotta
           "
         >
           <span className="sr-only">{open ? "Close menu" : "Open menu"}</span>
@@ -154,7 +154,7 @@ export function MarketingNav() {
                   w-full origin-left scale-x-0 bg-terracotta
                   transition-transform duration-300 ease-out
                   group-hover:scale-x-100
-                  group-data-[current]:scale-x-100 group-data-[current]:bg-ochre
+                  group-data-[current]:scale-x-100 group-data-[current]:bg-terracotta
                 "
               />
             </Link>
@@ -168,7 +168,7 @@ export function MarketingNav() {
             font-sans text-[0.8rem] tracking-wide text-foreground
             border border-border-subtle rounded
             px-3 py-1.5
-            transition-colors hover:border-ochre hover:text-ochre
+            transition-colors hover:border-terracotta hover:text-terracotta
           "
         >
           <span>Begin a conversation</span>
@@ -242,7 +242,7 @@ function NavLink({
           w-full origin-left scale-x-0 bg-terracotta
           transition-transform duration-300 ease-out
           group-hover:scale-x-100
-          group-data-[current]:scale-x-100 group-data-[current]:bg-ochre
+          group-data-[current]:scale-x-100 group-data-[current]:bg-terracotta
         "
       />
     </Link>
@@ -260,7 +260,7 @@ function BeginConversation({
       className={`
         group inline-flex items-baseline gap-2
         font-sans text-[0.9rem] tracking-wide text-foreground
-        transition-colors hover:text-ochre
+        transition-colors hover:text-terracotta
         ${className}
       `}
     >
@@ -381,7 +381,7 @@ function MobileSheet({
             className="
               inline-flex h-9 w-9 items-center justify-center
               rounded border border-ochre/40 text-foreground
-              transition-colors hover:border-ochre
+              transition-colors hover:border-terracotta
             "
           >
             <svg width="16" height="16" viewBox="0 0 20 20" aria-hidden>
@@ -409,7 +409,7 @@ function MobileSheet({
                   className="
                     block font-serif text-[1.75rem] leading-tight
                     text-foreground hover:text-terracotta transition-colors
-                    aria-[current=page]:text-ochre
+                    aria-[current=page]:text-terracotta
                   "
                 >
                   <span className="font-mono text-foreground-muted text-[0.65rem] mr-3 align-middle">
