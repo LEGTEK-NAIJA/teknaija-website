@@ -22,10 +22,10 @@ const STATUS_LABEL: Record<string, string> = {
 };
 
 const STATUS_TONE: Record<string, string> = {
-  operational: "text-moss",
-  degraded: "text-ochre",
-  partial_outage: "text-terracotta",
-  major_outage: "text-terracotta",
+  operational: "text-status-ok",
+  degraded: "text-status-warn",
+  partial_outage: "text-status-down",
+  major_outage: "text-status-down",
   maintenance: "text-ivory/60",
 };
 
@@ -138,10 +138,10 @@ function HistoryStrip({ days }: { days: string[] }) {
 
 function cellTone(status: string) {
   switch (status) {
-    case "operational": return "bg-moss/85 hover:bg-moss";
-    case "degraded": return "bg-ochre/85 hover:bg-ochre";
-    case "partial_outage": return "bg-terracotta/70 hover:bg-terracotta";
-    case "major_outage": return "bg-terracotta hover:bg-terracotta";
+    case "operational": return "bg-status-ok/85 hover:bg-status-ok";
+    case "degraded": return "bg-status-warn/85 hover:bg-status-warn";
+    case "partial_outage": return "bg-status-down/70 hover:bg-status-down";
+    case "major_outage": return "bg-status-down hover:bg-status-down";
     case "maintenance": return "bg-indigo/70 hover:bg-indigo";
     default: return "bg-foreground/8 hover:bg-foreground/15";
   }

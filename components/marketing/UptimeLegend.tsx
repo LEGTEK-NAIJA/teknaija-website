@@ -1,8 +1,8 @@
 const LEGEND = [
-  { label: "Operational", tone: "bg-moss/85" },
-  { label: "Degraded", tone: "bg-ochre/85" },
-  { label: "Partial outage", tone: "bg-terracotta/70" },
-  { label: "Major outage", tone: "bg-terracotta" },
+  { label: "Operational", tone: "bg-status-ok/85" },
+  { label: "Degraded", tone: "bg-status-warn/85" },
+  { label: "Partial outage", tone: "bg-status-down/70" },
+  { label: "Major outage", tone: "bg-status-down" },
   { label: "In development", tone: "bg-indigo/70" },
   { label: "No data", tone: "bg-foreground/10" },
 ] as const;

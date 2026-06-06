@@ -28,6 +28,11 @@
   --border-subtle: color-mix(in srgb, var(--ochre) 35%, transparent);
   --border-strong: var(--ochre);
 
+  /* Status semantics — decoupled from brand palette (aliases, no visual change) */
+  --status-ok: var(--moss);
+  --status-warn: var(--ochre);
+  --status-down: var(--terracotta);
+
   /* Typography stacks (Google Fonts import above) */
   --font-sans-stack: "Geist", ui-sans-serif, system-ui, sans-serif;
   --font-display-stack: "Fraunces", ui-serif, Georgia, Cambria, "Times New Roman",
@@ -75,6 +80,9 @@
   --color-indigo: var(--indigo);
   --color-clay: var(--clay);
   --color-moss: var(--moss);
+  --color-status-ok: var(--status-ok);
+  --color-status-warn: var(--status-warn);
+  --color-status-down: var(--status-down);
 
   --color-background: var(--background);
   --color-foreground: var(--foreground);

@@ -16,10 +16,10 @@ const SEVERITY_LABEL: Record<Incident["severity"], string> = {
 };
 
 const SEVERITY_TONE: Record<Incident["severity"], string> = {
-  investigating: "text-terracotta",
-  identified: "text-ochre",
-  monitoring: "text-ochre",
-  resolved: "text-moss",
+  investigating: "text-status-down",
+  identified: "text-status-warn",
+  monitoring: "text-status-warn",
+  resolved: "text-status-ok",
 };
 
 function formatDate(iso: string) {

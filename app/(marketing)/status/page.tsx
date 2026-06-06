@@ -130,10 +130,10 @@ export default async function StatusPage() {
 function CompositeBanner({ status, message }: { status: string; message: string }) {
   const tone =
     status === "operational"
-      ? { ring: "ring-moss/40", dot: "bg-moss", text: "text-moss" }
+      ? { ring: "ring-status-ok/40", dot: "bg-status-ok", text: "text-status-ok" }
       : status === "degraded"
-        ? { ring: "ring-ochre/50", dot: "bg-ochre", text: "text-ochre" }
-        : { ring: "ring-terracotta/60", dot: "bg-terracotta", text: "text-terracotta" };
+        ? { ring: "ring-status-warn/50", dot: "bg-status-warn", text: "text-status-warn" }
+        : { ring: "ring-status-down/60", dot: "bg-status-down", text: "text-status-down" };
 
   return (
     <div className={`flex items-center gap-5 rounded-none border-l-2 border-l-current ${tone.text} bg-surface-sunken/40 backdrop-blur-sm py-5 px-6 lg:px-8 ring-1 ring-inset ${tone.ring}`}>

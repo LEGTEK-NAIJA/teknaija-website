@@ -94,10 +94,10 @@ export function SystemStrip({
 function Dot({ status }: { status: "operational" | "preview" | "degraded" }) {
   const color =
     status === "operational"
-      ? "bg-moss"
+      ? "bg-status-ok"
       : status === "preview"
-        ? "bg-ochre"
-        : "bg-terracotta";
+        ? "bg-status-warn"
+        : "bg-status-down";
   return (
     <span className="relative inline-flex items-center" aria-label={status}>
       <span className={`relative inline-block h-1.5 w-1.5 rounded-full ${color}`}>
